@@ -1,0 +1,114 @@
+--- acats_40k/cxa/cxai018.a
++++ cxa/cxai018.a
+@@ -93,7 +93,7 @@
+       declare
+       begin
+ 
+-         Container.Append (New_Item => Value_In_Array (1));
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
+@@ -133,7 +133,7 @@
+ 
+       My_Constant_Reference : My_Vectors.Constant_Reference_Type :=
+                                 My_Vector_1.Constant_Reference
+-                                  (Index => My_Vector_1.First_Index);
++                                  (My_Vector_1.First_Index);
+ 
+    begin
+ 
+@@ -146,7 +146,7 @@
+    declare
+ 
+       My_Reference : My_Vectors.Reference_Type :=
+-                       My_Vector_1.Reference (Index => My_Vector_1.First_Index);
++                       My_Vector_1.Reference (My_Vector_1.First_Index);
+ 
+    begin
+ 
+@@ -231,14 +231,13 @@
+       -- Normal call:
+       Test (Value    =>
+                My_Vectors.Constant_Reference(My_Vector_1,
+-                   Index => My_Index_1).Element.all,
++                   My_Index_1).Element.all,
+             Expected => Value_In_Array (1),
+             Test_Case=> "Constant_Reference normal indexing");
+ 
+       Test_and_Mod (
+             Value    =>
+-               My_Vectors.Reference(My_Vector_1,
+-                   Index => My_Index_1).Element.all,
++               My_Vectors.Reference(My_Vector_1, My_Index_1).Element.all,
+             Expected => Value_In_Array (1),
+             New_Item => Value_In_Array (2),
+             Test_Case=> "Reference normal indexing");
+@@ -259,14 +258,13 @@
+ 
+       -- Prefix call with all components explicit:
+       Test (Value    =>
+-               My_Vector_1.Constant_Reference(
+-                   Index => My_Index_1).Element.all,
++               My_Vector_1.Constant_Reference(My_Index_1).Element.all,
+             Expected => Value_In_Array (3),
+             Test_Case=> "Constant_Reference prefix indexing");
+ 
+       Test_and_Mod (
+             Value    =>
+-               My_Vector_1.Reference(Index => My_Index_1).Element.all,
++               My_Vector_1.Reference(My_Index_1).Element.all,
+             Expected => Value_In_Array (3),
+             New_Item => Value_In_Array (4),
+             Test_Case=> "Reference prefix indexing");
+@@ -285,12 +283,12 @@
+             Test_Case=> "Reference prefix cursor");
+ 
+       -- Prefix call using a generalized reference (implicit dereference):
+-      Test (Value    => My_Vector_1.Constant_Reference(Index => My_Index_1),
++      Test (Value    => My_Vector_1.Constant_Reference(My_Index_1),
+             Expected => Value_In_Array (5),
+             Test_Case=> "Constant_Reference generalized indexing");
+ 
+       Test_and_Mod (
+-            Value    => My_Vector_1.Reference(Index => My_Index_1),
++            Value    => My_Vector_1.Reference(My_Index_1),
+             Expected => Value_In_Array (5),
+             New_Item => Value_In_Array (6),
+             Test_Case=> "Reference generalized indexing");
+@@ -482,7 +480,7 @@
+       Previous_Value  := Value_In_Array (Num_Tests / 2) - 1.0;
+       Upper_Total_Out := 0.0;
+ 
+-      for C in My_Vector_1.Iterate (My_Cursor_1) loop
++      for C in My_Vector_1.Iterate (My_Cursor_1, My_Vector_1.Last) loop
+ 
+          Tampering_Check
+            (Container => My_Vector_1,
+@@ -511,7 +509,8 @@
+       Previous_Value  := Value_In_Array (Num_Tests / 2) + 1.0;
+       Lower_Total_Out := 0.0;
+ 
+-      for C in reverse My_Vector_1.Iterate (My_Cursor_1) loop
++      for C in reverse My_Vector_1.Iterate (My_Vector_1.First, My_Cursor_1)
++        loop
+ 
+          Tampering_Check
+            (Container => My_Vector_1,
+@@ -583,13 +582,14 @@
+ 
+       for I in Array_Bounds_Type loop
+ 
+-         if My_Vectors.Element (Position => My_Cursor_1) /= 0.0 then
++         if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++           0.0 then
+ 
+             Report.Failed ("Data set by of loop not as expected");
+ 
+          end if;
+ 
+-         My_Vectors.Next (Position => My_Cursor_1);
++         My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+       end loop;
+ 

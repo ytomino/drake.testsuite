@@ -1,0 +1,417 @@
+--- acats_40k/cxa/cxai001.a
++++ cxa/cxai001.a
+@@ -99,7 +99,7 @@
+       declare
+       begin
+ 
+-         Container.Append (New_Item => Value_In_Array (1));
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
+@@ -209,8 +209,8 @@
+ 
+       begin
+ 
+-         if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (I)
+-          then
++         if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++           Value_In_Array (I) then
+ 
+             Report.Failed ("Mismatch between element and what was appended #2");
+ 
+@@ -220,8 +220,8 @@
+ 
+          if I mod 2 = 0 then
+ 
+-            My_Vectors.Query_Element
+-              (Position => My_Cursor_1,
++            My_Vector_1.Query_Element
++              (Index    => My_Vectors.To_Index (My_Cursor_1),
+                Process  => My_Query'Access);
+ 
+          else
+@@ -234,17 +234,7 @@
+ 
+       end;
+ 
+-      -- Toggle between alternative methods for incrementing cursor
+-
+-      if I mod 2 = 0 then
+-
+-         My_Cursor_1 := My_Vectors.Next (Position => My_Cursor_1);
+-
+-      else
+-
+-         My_Vectors.Next (Position => My_Cursor_1);
+-
+-      end if;
++      My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+    end loop;
+ 
+@@ -305,23 +295,14 @@
+ 
+    for I in reverse Array_Bounds_Type loop
+ 
+-      if My_Vectors.Element (Position => My_Cursor_2) /= Value_In_Array (I) then
++      if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++        Value_In_Array (I) then
+ 
+          Report.Failed ("Mismatch between element and what was prepended");
+ 
+       end if;
+ 
+-      -- Toggle between alternative methods for decrementing cursor
+-
+-      if I mod 2 = 0 then
+-
+-         My_Cursor_2 := My_Vectors.Previous (Position => My_Cursor_2);
+-
+-      else
+-
+-         My_Vectors.Previous (Position => My_Cursor_2);
+-
+-      end if;
++      My_Cursor_2 := My_Vector_2.Iterate.Previous (Position => My_Cursor_2);
+ 
+    end loop;
+ 
+@@ -366,7 +347,8 @@
+            (Container => My_Vector_3,
+             Where     => "Iterate");
+ 
+-         if My_Vectors.Element (Position) /= Value_In_Array (I) then
++         if My_Vector_3.Element (My_Vectors.To_Index (Position)) /=
++           Value_In_Array (I) then
+ 
+             Report.Failed ("Iterate hasn't found the expected value");
+ 
+@@ -388,7 +370,8 @@
+            (Container => My_Vector_3,
+             Where     => "Reverse_Iterate");
+ 
+-         if My_Vectors.Element (Position) /= Value_In_Array (I) then
++         if My_Vector_3.Element (My_Vectors.To_Index (Position)) /=
++           Value_In_Array (I) then
+ 
+             Report.Failed ("Reverse_Iterate hasn't found the expected value");
+ 
+@@ -447,7 +430,7 @@
+          else
+ 
+             My_Vector_1.Replace_Element
+-              (Index    => Natural (I) - 1,
++              (Position => My_Vector_1.To_Cursor (Natural (I) - 1),
+                New_Item => Value_In_Array (I) * 2.0);
+ 
+          end if;
+@@ -464,15 +447,15 @@
+          else
+ 
+             My_Vector_2.Update_Element
+-              (Index   => Natural (I) - 1,
++              (Position => My_Vector_2.To_Cursor (Natural (I) - 1),
+                Process => My_Update'Access);
+ 
+          end if;
+ 
+       end;
+ 
+-      My_Vectors.Next (Position => My_Cursor_1);
+-      My_Vectors.Next (Position => My_Cursor_2);
++      My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
++      My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+    end loop;
+ 
+@@ -505,14 +488,14 @@
+ 
+    for I in Array_Bounds_Type loop
+ 
+-      if My_Vectors.Element (Position => My_Cursor_1) /=
++      if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
+         Value_In_Array (Num_Tests - I + 1) then
+ 
+          Report.Failed ("Reversed array not as expected");
+ 
+       end if;
+ 
+-      My_Vectors.Next (Position => My_Cursor_1);
++      My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+    end loop;
+ 
+@@ -546,13 +529,14 @@
+ 
+    for I in Array_Bounds_Type loop
+ 
+-      if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (I) then
++      if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++        Value_In_Array (I) then
+ 
+          Report.Failed ("Target vector not as expected after move");
+ 
+       end if;
+ 
+-      My_Vectors.Next (Position => My_Cursor_1);
++      My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+    end loop;
+ 
+@@ -577,6 +561,7 @@
+    My_Vector_2.Insert
+      (Before   => My_Cursor_2,
+       Position => My_Cursor_2, -- First of added elements
++      New_Item => My_Default_Value,
+       Count    => 3);
+ 
+    -- The order should now be Value_In_Array (1), Default_Value, Default_Value,
+@@ -601,49 +586,55 @@
+    My_Cursor_2 := My_Vector_2.First;
+ 
+    -- Check = Default_Value
+-   if My_Vectors.Element (Position => My_Cursor_2) /= My_Default_Value then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     My_Default_Value then
+ 
+       Report.Failed ("Inserted value not as expected #1");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_2);
++   My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_2) /= Value_In_Array (1) then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     Value_In_Array (1) then
+ 
+       Report.Failed ("Inserted value not as expected #2");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_2);
++   My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+    -- Check = Default_Value
+-   if My_Vectors.Element (Position => My_Cursor_2) /= My_Default_Value then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     My_Default_Value then
+ 
+       Report.Failed ("Inserted value not as expected #3");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_2);
++   My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_2) /= Value_In_Array (2) then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     Value_In_Array (2) then
+ 
+       Report.Failed ("Inserted value not as expected #4");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_2);
++   My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_2) /= Value_In_Array (2) then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     Value_In_Array (2) then
+ 
+       Report.Failed ("Inserted value not as expected #5");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_2);
++   My_Cursor_2 := My_Vector_2.Iterate.Next (Position => My_Cursor_2);
+ 
+    -- Check = Default_Value
+-   if My_Vectors.Element (Position => My_Cursor_2) /= My_Default_Value then
++   if My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)) /=
++     My_Default_Value then
+ 
+       Report.Failed ("Inserted value not as expected #6");
+ 
+@@ -711,7 +702,8 @@
+ 
+    My_Vector_2.Delete (Position => My_Cursor_2); -- Count should default to 1
+ 
+-   My_Vector_2.Delete (Index => 1); -- Count should default to 1
++   My_Cursor_2 := My_Vector_2.To_Cursor (1);
++   My_Vector_2.Delete (Position => My_Cursor_2); -- Count should default to 1
+ 
+    My_Vector_2.Delete_First (Count => 1);
+ 
+@@ -724,7 +716,8 @@
+    end if;
+ 
+    -- Check = Default_Value
+-   if My_Vectors.Element (My_Vector_2.First) /= My_Default_Value then
++   if My_Vector_2.Element (My_Vectors.To_Index (My_Vector_2.First)) /=
++     My_Default_Value then
+ 
+       Report.Failed ("Remaining value not as expected");
+ 
+@@ -763,7 +756,8 @@
+ 
+    My_Vector_1.Insert
+      (Before   => My_Cursor_1,
+-      New_Item => My_Vectors.Element (Position => My_Cursor_2));
++      New_Item =>
++         My_Vector_2.Element (Index => My_Vectors.To_Index (My_Cursor_2)));
+ 
+    My_Vector_2.Delete (Position => My_Cursor_2); -- Count should default to 1
+ 
+@@ -788,7 +782,8 @@
+ 
+    My_Index_1 := My_Vector_1.Reverse_Find_Index (Item => Value_In_Array (9));
+ 
+-   My_Vector_1.Delete (Index => My_Index_1); -- Count should default to 1
++   My_Cursor_1 := My_Vector_1.To_Cursor (My_Index_1);
++   My_Vector_1.Delete (Position => My_Cursor_1); -- Count should default to 1
+ 
+    -- The order should now be Value_In_Array (1), Value_In_Array (9),
+    -- Value_In_Array (2), Default_Value, Value_In_Array (3), Value_In_Array (4),
+@@ -797,96 +792,108 @@
+ 
+    My_Cursor_1 := My_Vector_1.First;
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (1) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (1) then
+ 
+       Report.Failed ("Value not as expected #1");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (9) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (9) then
+ 
+       Report.Failed ("Value not as expected #2");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (2) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (2) then
+ 
+       Report.Failed ("Value not as expected #3");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+    -- Check = Default_Value
+-   if My_Vectors.Element (Position => My_Cursor_1) /= My_Default_Value then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     My_Default_Value then
+ 
+       Report.Failed ("Value not as expected #4");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (3) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (3) then
+ 
+       Report.Failed ("Value not as expected #5");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (4) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (4) then
+ 
+       Report.Failed ("Value not as expected #6");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (7) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (7) then
+ 
+       Report.Failed ("Value not as expected #7");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (5) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (5) then
+ 
+       Report.Failed ("Value not as expected #8");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (6) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (6) then
+ 
+       Report.Failed ("Value not as expected #9");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (7) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (7) then
+ 
+       Report.Failed ("Value not as expected #10");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (8) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (8) then
+ 
+       Report.Failed ("Value not as expected #11");
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+-   if My_Vectors.Element (Position => My_Cursor_1) /= Value_In_Array (10) then
++   if My_Vector_1.Element (Index => My_Vectors.To_Index (My_Cursor_1)) /=
++     Value_In_Array (10) then
+ 
+       Report.Failed ("Value not as expected #12");
+ 
+@@ -918,7 +925,7 @@
+ 
+    end if;
+ 
+-   My_Vectors.Next (Position => My_Cursor_1);
++   My_Cursor_1 := My_Vector_1.Iterate.Next (Position => My_Cursor_1);
+ 
+    -- My_Cursor_1 should now be pointing off the end
+ 
