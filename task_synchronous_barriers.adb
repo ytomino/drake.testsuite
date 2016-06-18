@@ -65,7 +65,7 @@ begin
 				& " : "
 				& Boolean'Image (Notified));
 			if Notified then
-			   Notified_Count.Increment;
+				Notified_Count.Increment;
 			end if;
 		end Process;
 	begin
