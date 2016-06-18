@@ -1,0 +1,27 @@
+--- acats_40k/c3/c352001.a
++++ c3/c352001.a
+@@ -54,7 +54,7 @@
+ 
+    Lower_Bound  : Integer  :=  0;
+    Middle_Bound : Integer  := 31;
+-   Upper_Bound  : Integer  := 159;
++   Upper_Bound  : Integer  := 127; -- [drake] have no ASCII names of upper half
+    Half_Bound   : Integer  := 127;
+    Max_Bound    : Integer  := 255;
+ 
+@@ -258,12 +258,13 @@
+ 
+ 
+    if Wide_Character'Image
+-     (Wide_Character'Pred (Wide_Character'Last) ) /= "HEX_0000FFFE" then
++     (Wide_Character'Pred (Wide_Character'Last) ) /= "HEX_FFFE" -- [drake]
++   then
+       Report.Failed ("Wide_Character at 65534 is not HEX_0000FFFE");
+    end if;
+ 
+ 
+-   if Wide_Character'Image(Wide_Character'Last) /= "HEX_0000FFFF" then
++   if Wide_Character'Image(Wide_Character'Last) /= "HEX_FFFF" then -- [drake]
+       Report.Failed ("Wide_Character'Last is not FFFF");
+    end if;
+ 

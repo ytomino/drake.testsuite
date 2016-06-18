@@ -1,0 +1,59 @@
+--- acats_40k/cxa/cxa4026.a
++++ cxa/cxa4026.a
+@@ -76,12 +76,13 @@
+    -- of the ranges 223..246 or 248..255, provided the character has
+    -- an upper case form.               
+ 
+-   function Map_To_Upper_Case (From : Character) return Character;
++   function Map_To_Upper_Case (From : Wide_Wide_Character)
++                              return Wide_Wide_Character;
+ 
+ end CXA4026_0;
+ 
+ 
+-with Ada.Characters.Handling;
++with Ada.Wide_Wide_Characters.Handling;
+ package body CXA4026_0 is
+ 
+    function Map_To_Lower_Case (From : Character) return Character is
+@@ -94,9 +95,10 @@
+       end if;
+    end Map_To_Lower_Case;
+ 
+-   function Map_To_Upper_Case (From : Character) return Character is
++   function Map_To_Upper_Case (From : Wide_Wide_Character)
++                              return Wide_Wide_Character is
+    begin
+-      return Ada.Characters.Handling.To_Upper(From);
++      return Ada.Wide_Wide_Characters.Handling.To_Upper(From);
+    end Map_To_Upper_Case;
+ 
+ end CXA4026_0;
+@@ -127,7 +129,7 @@
+       -- The following strings are used in examination of the Translation
+       -- subprograms.
+ 
+-      New_Character_String : String(1..10) :=
++      New_Character_String : String :=
+                                Ada.Characters.Latin_1.LC_A_Grave          &
+                                Ada.Characters.Latin_1.LC_A_Ring           &
+                                Ada.Characters.Latin_1.LC_AE_Diphthong     &
+@@ -140,7 +142,7 @@
+                                Ada.Characters.Latin_1.LC_Icelandic_Thorn;  
+  
+ 
+-      TC_New_Character_String : String(1..10) :=
++      TC_New_Character_String : String :=
+                                Ada.Characters.Latin_1.UC_A_Grave          &
+                                Ada.Characters.Latin_1.UC_A_Ring           &
+                                Ada.Characters.Latin_1.UC_AE_Diphthong     &
+@@ -162,7 +164,8 @@
+       Map_To_Lower_Case_Ptr : Maps.Character_Mapping_Function :=
+                                 Map_To_Lower_Case'Access;
+ 
+-      Map_To_Upper_Case_Ptr : Maps.Character_Mapping_Function :=
++      Map_To_Upper_Case_Ptr : access function (From : Wide_Wide_Character)
++                                              return Wide_Wide_Character :=
+                                 Map_To_Upper_Case'Access;
+ 
+ 

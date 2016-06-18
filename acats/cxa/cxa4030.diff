@@ -1,0 +1,31 @@
+--- acats_40k/cxa/cxa4030.a
++++ cxa/cxa4030.a
+@@ -63,6 +63,7 @@
+ with Ada.Strings.Maps;
+ with Ada.Characters.Handling;
+ with Ada.Characters.Latin_1;
++with Ada.Wide_Wide_Characters.Handling;
+ with Report;
+ 
+ procedure CXA4030 is
+@@ -125,8 +126,9 @@
+       Map_To_Lower_Case_Ptr : Maps.Character_Mapping_Function :=
+                                 Handling.To_Lower'Access;
+ 
+-      Map_To_Upper_Case_Ptr : Maps.Character_Mapping_Function :=
+-                                Handling.To_Upper'Access;
++      Map_To_Upper_Case_Ptr : access function (From : Wide_Wide_Character)
++                                              return Wide_Wide_Character :=
++        Ada.Wide_Wide_Characters.Handling.To_Upper'Access;
+ 
+    begin
+ 
+@@ -330,7 +332,7 @@
+          Unb.To_Unbounded_String("LOTS OF MIXED CASE CHARACTERS")    or
+ 
+          Unb.Translate(New_Character_String, 
+-                       Handling.To_Upper'Access)                   /=
++                       Ada.Wide_Wide_Characters.Handling.To_Upper'Access)/=
+          TC_New_Character_String
+ 
+       then

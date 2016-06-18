@@ -1,0 +1,147 @@
+--- acats_40k/cxa/cxa3003.a
++++ cxa/cxa3003.a
+@@ -59,10 +59,29 @@
+ 
+ with Ada.Characters.Latin_1;
+ with Ada.Characters.Handling;
++with Ada.Wide_Characters.Latin_1;
++with Ada.Strings.Wide_Maps.Wide_Constants;
+ with Report;
+ 
+ procedure CXA3003 is
+ 
++   function Is_ISO_646 (Item : Wide_Character) return Boolean is
++   begin
++      return Ada.Strings.Wide_Maps.Is_In
++               (Item, Ada.Strings.Wide_Maps.Wide_Constants.ISO_646_Set);
++   end Is_ISO_646;
++
++   function To_ISO_646 (Item : Wide_Character;
++                        Substitute : Ada.Characters.Handling.ISO_646 := ' ')
++                       return Wide_Character is
++   begin
++      if Is_ISO_646 (Item) then
++         return Item;
++      else
++         return Ada.Characters.Handling.To_Wide_Character (Substitute);
++      end if;
++   end To_ISO_646;
++
+ begin
+ 
+    Report.Test ("CXA3003", "Check that the functions defined in package " &
+@@ -78,29 +97,32 @@
+       -- ISO_646 Characters
+ 
+       Char_1,
+-      TC_Char_1  : Character := Ada.Characters.Latin_1.NUL;    -- Control Char
++      TC_Char_1  : Wide_Character :=
++                     Ada.Wide_Characters.Latin_1.NUL;          -- Control Char
+       Char_2,
+-      TC_Char_2  : Character := Ada.Characters.Latin_1.Colon;  -- Graphic Char
++      TC_Char_2  : Wide_Character :=
++                     Ada.Wide_Characters.Latin_1.Colon;        -- Graphic Char
+       Char_3,
+-      TC_Char_3  : Character := '4';
++      TC_Char_3  : Wide_Character := '4';
+       Char_4,
+-      TC_Char_4  : Character := 'Z';
++      TC_Char_4  : Wide_Character := 'Z';
+       Char_5,
+-      TC_Char_5  : Character := Ada.Characters.Latin_1.LC_W;   -- w
++      TC_Char_5  : Wide_Character :=
++                     Ada.Wide_Characters.Latin_1.LC_W;         -- w
+ 
+       New_ISO_646_Char : Character := '*';
+ 
+ 
+       -- Non-ISO_646 Characters
+ 
+-      Char_Array : array (6..10) of Character := 
+-                                       (Ada.Characters.Latin_1.SSA,
+-                                        Ada.Characters.Latin_1.Cent_Sign,
+-                                        Ada.Characters.Latin_1.Cedilla,
+-                                        Ada.Characters.Latin_1.UC_A_Ring,
+-                                        Ada.Characters.Latin_1.LC_A_Ring);
++      Char_Array : array (6..10) of Wide_Character := 
++                                      (Ada.Wide_Characters.Latin_1.SSA,
++                                       Ada.Wide_Characters.Latin_1.Cent_Sign,
++                                       Ada.Wide_Characters.Latin_1.Cedilla,
++                                       Ada.Wide_Characters.Latin_1.UC_A_Ring,
++                                       Ada.Wide_Characters.Latin_1.LC_A_Ring);
+ 
+-      TC_Char : constant Character := '*';
++      TC_Char : constant Wide_Character := '*';
+ 
+       -- ISO_646 Strings
+ 
+@@ -113,41 +135,41 @@
+ 
+       -- Non-ISO_646 Strings
+ 
+-      Str_3    : String (1..8) := "$123.45" & 
++      Str_3    : String        := "$123.45" &
+                                   Ada.Characters.Latin_1.Cent_Sign;
+       TC_Str_3 : String (1..8) := "$123.45*";
+ 
+-      Str_4    : String (1..7) := "abc" & 
++      Str_4    : String        := "abc" &
+                                   Ada.Characters.Latin_1.Cedilla &
+                                   "efg";
+       TC_Str_4 : String (1..7) := "abc*efg";
+ 
+-      Str_5    : String (1..3) := Ada.Characters.Latin_1.LC_E_Grave & 
++      Str_5    : String        := Ada.Characters.Latin_1.LC_E_Grave &
+                                   Ada.Characters.Latin_1.LC_T       &
+                                   Ada.Characters.Latin_1.LC_E_Acute;
+       TC_Str_5 : String (1..3) := "*t*";
+ 
+       ---
+ 
+-      procedure Validate_Character (Char : in out Character) is
++      procedure Validate_Character (Char : in out Wide_Character) is
+          -- If parameter Char is an ISO_646 character, Char will be returned,
+          -- otherwise the following constant will be returned.
+          Star : constant Ada.Characters.Handling.ISO_646 := 
+            Ada.Characters.Latin_1.Asterisk;                    
+       begin
+-         if Ada.Characters.Handling.Is_ISO_646(Char) then
++         if Is_ISO_646(Char) then
+             -- Check that the Is_ISO_646 function provide a correct result.
+-            if Character'Pos(Char) > 127 then
++            if Wide_Character'Pos(Char) > 127 then
+                Report.Failed("Is_ISO_646 returns a false positive result");
+             end if;
+          else
+-            if Character'Pos(Char) < 128 then
++            if Wide_Character'Pos(Char) < 128 then
+                Report.Failed("Is_ISO_646 returns a false negative result");
+             end if;
+          end if;
+          -- Cross-check Is_ISO_646 with To_ISO_646.  '*' will be returned
+          -- if Char is not in the ISO_646 set.
+-         Char := Ada.Characters.Handling.To_ISO_646(Char, Star);
++         Char := To_ISO_646(Char, Star);
+       exception
+          when others => Report.Failed ("Exception in Validate_Character");
+       end Validate_Character;
+@@ -219,16 +241,13 @@
+ 
+       Str_1 := Validate_String (Str_1);
+       Str_2 := Validate_String (Str_2);
+-      Str_3 := Validate_String (Str_3);
+-      Str_4 := Validate_String (Str_4);
+-      Str_5 := Validate_String (Str_5);
+ 
+ 
+       if Str_1 /= TC_Str_1 or
+          Str_2 /= TC_Str_2 or
+-         Str_3 /= TC_Str_3 or
+-         Str_4 /= TC_Str_4 or
+-         Str_5 /= TC_Str_5
++         Validate_String (Str_3) /= TC_Str_3 or
++         Validate_String (Str_4) /= TC_Str_4 or
++         Validate_String (Str_5) /= TC_Str_5
+       then
+          Report.Failed ("Incorrect ISO_646 character substitution in string");
+       end if;

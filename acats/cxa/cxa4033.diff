@@ -1,0 +1,21 @@
+--- acats_40k/cxa/cxa4033.a
++++ cxa/cxa4033.a
+@@ -51,6 +51,7 @@
+ end CXA4033_0;
+ 
+ with Ada.Characters.Handling;
++with Ada.Wide_Characters.Handling;
+ package body CXA4033_0 is
+       -- Function Map_To_Lower_Case will return the lower case form of 
+       -- Wide_Characters in the range 'A'..'Z' only, and return the input
+@@ -72,9 +73,7 @@
+       function Map_To_Upper_Case (From : Wide_Character) 
+         return Wide_Character is
+       begin
+-         return Ada.Characters.Handling.To_Wide_Character(
+-                  Ada.Characters.Handling.To_Upper(
+-                    Ada.Characters.Handling.To_Character(From)));
++         return Ada.Wide_Characters.Handling.To_Upper(From);
+       end Map_To_Upper_Case;
+ 
+ end CXA4033_0;

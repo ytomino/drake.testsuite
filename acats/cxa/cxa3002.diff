@@ -1,0 +1,75 @@
+--- acats_40k/cxa/cxa3002.a
++++ cxa/cxa3002.a
+@@ -46,12 +46,26 @@
+ 
+ with Ada.Characters.Latin_1;
+ with Ada.Characters.Handling;
++with Ada.Wide_Characters.Latin_1;
++with Ada.Wide_Characters.Handling;
++with Ada.Strings.Wide_Maps.Wide_Constants;
+ with Report;
+ 
+ procedure CXA3002 is
+ 
+    package AC  renames Ada.Characters;
+    package ACH renames Ada.Characters.Handling;
++   package AWC renames Ada.Wide_Characters;
++   package AWCH renames Ada.Wide_Characters.Handling;
++
++   UC_Y_Diaeresis : constant String :=
++      Character'Val (16#C5#) & Character'Val (16#B8#);
++
++   function To_Basic (X : Wide_Character) return Wide_Character is
++   begin
++      return Ada.Strings.Wide_Maps.Value
++               (Ada.Strings.Wide_Maps.Wide_Constants.Basic_Map, X);
++   end To_Basic;
+ 
+ begin
+ 
+@@ -133,7 +147,7 @@
+               ACH.To_Upper(AC.Latin_1.LC_German_Sharp_S) =
+                 AC.Latin_1.LC_German_Sharp_S                and
+               ACH.To_Upper(AC.Latin_1.LC_Y_Diaeresis) =
+-                AC.Latin_1.LC_Y_Diaeresis) 
++                UC_Y_Diaeresis) -- [drake]
+       then
+          Report.Failed ("Incorrect operation of function To_Upper - 4");
+       end if;
+@@ -160,7 +174,7 @@
+ 
+ 
+       if ACH.To_Basic('Y') /= 'Y'                   or 
+-         ACH.To_Basic(AC.Latin_1.LC_E_Acute) /= 'e' or
++         To_Basic(AWC.Latin_1.LC_E_Acute) /= 'e'    or
+          ACH.To_Basic('6') /= '6'                   or
+          ACH.To_Basic(AC.Latin_1.LC_R) /= 'r' 
+       then
+@@ -179,15 +193,15 @@
+       end if;
+ 
+ 
+-      if ACH.To_Basic(ACH.To_Lower(ACH.To_Upper(AC.Latin_1.LC_U_Grave))) /= 
++      if To_Basic(AWCH.To_Lower(AWCH.To_Upper(AWC.Latin_1.LC_U_Grave))) /=
+          'u'
+       then
+          Report.Failed("Incorrect operation of functions in combination - 2");
+       end if;
+        
+ 
+-      if ACH.To_Lower (ACH.To_Basic 
+-                         (ACH.To_Upper(AC.Latin_1.LC_O_Diaeresis))) /= 'o'
++      if AWCH.To_Lower (To_Basic
++                          (AWCH.To_Upper(AWC.Latin_1.LC_O_Diaeresis))) /= 'o'
+       then
+          Report.Failed("Incorrect operation of functions in combination - 3");
+       end if;
+@@ -231,7 +245,7 @@
+ 
+       UC_Special_String  : constant String := "AB"                         &
+                                               AC.Latin_1.LC_German_Sharp_S &
+-                                              AC.Latin_1.LC_Y_Diaeresis;
++                                              UC_Y_Diaeresis; -- [drake]
+ 
+    begin
+ 

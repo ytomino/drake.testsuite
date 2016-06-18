@@ -1,0 +1,22 @@
+--- acats_40k/cxa/cxa4029.a
++++ cxa/cxa4029.a
+@@ -108,8 +108,9 @@
+       subtype LC_Characters is Wide_Character range 'a'..'z';
+ 
+       use Ada.Characters, Ada.Strings;
++      use BS20;
+       use type Wide_Maps.Wide_Character_Set; 
+-      use type BS1.Bounded_Wide_String,  BS20.Bounded_Wide_String, 
++      use type BS1.Bounded_Wide_String,
+                BS40.Bounded_Wide_String, BS80.Bounded_Wide_String;
+ 
+       TC_String      : constant Wide_String := "A Standard String";
+@@ -210,8 +211,6 @@
+       end if;
+ 
+       -- Procedure Append.
+-      declare
+-         use BS20;
+       begin
+          BString_20 := BS20.Null_Bounded_Wide_String;
+          Append(BString_20, 'T');                     

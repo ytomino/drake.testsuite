@@ -1,0 +1,47 @@
+--- acats_40k/cxa/cxac004.a
++++ cxa/cxac004.a
+@@ -57,7 +57,7 @@
+ with Report;
+ with Ada.Text_IO;
+ with Ada.Text_IO.Text_Streams;
+-with Ada.Characters.Latin_1;
++with Ada.Wide_Characters.Latin_1;
+ with Ada.Strings.Unbounded;
+ 
+ procedure CXAC004 is
+@@ -95,7 +95,7 @@
+ 
+    Test_Block:
+    declare
+-      use Ada.Characters.Latin_1, Ada.Strings.Unbounded;
++      use Ada.Wide_Characters.Latin_1, Ada.Strings.Unbounded;
+       TC_Items  : constant := 3;
+ 
+       -- Declare types and objects that will be used as data values to be
+@@ -107,7 +107,7 @@
+       type Modular_Type       is mod 256;  
+       subtype Str_Type        is String(1..4);
+ 
+-      type Char_Array_Type    is array (1..TC_Items) of Character;
++      type Char_Array_Type    is array (1..TC_Items) of Wide_Character;
+       type Enum_Array_Type    is array (1..TC_Items) of Enum_Type;
+       type Fixed_Array_Type   is array (1..TC_Items) of Fixed_Type;
+       type Float_Array_Type   is array (1..TC_Items) of Float_Type;
+@@ -164,7 +164,7 @@
+       -- Note that the data will be mixed within the text file.
+ 
+       for i in 1..TC_Items loop
+-         Character'Write       (Data_Stream, Char_Array(i));
++         Wide_Character'Write  (Data_Stream, Char_Array(i));
+          Enum_Type'Write       (Data_Stream, Enum_Array(i));
+          Fixed_Type'Write      (Data_Stream, Fix_Array(i));
+          Float_Type'Write      (Data_Stream, Flt_Array(i));
+@@ -204,7 +204,7 @@
+       -- Extract and validate all the single data items from the stream.
+ 
+       for i in 1..TC_Items loop
+-         Character'Read        (Data_Stream, TC_Char_Array_1(i));
++         Wide_Character'Read   (Data_Stream, TC_Char_Array_1(i));
+          Enum_Type'Read        (Data_Stream, TC_Enum_Array_1(i));
+          Fixed_Type'Read       (Data_Stream, TC_Fix_Array_1(i));
+          Float_Type'Read       (Data_Stream, TC_Flt_Array_1(i));

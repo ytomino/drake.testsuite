@@ -1,0 +1,21 @@
+--- acats_40k/cxa/cxa4028.a
++++ cxa/cxa4028.a
+@@ -76,8 +76,8 @@
+       package BS40 is new Ada.Strings.Bounded.Generic_Bounded_Length(40);
+       package BS80 is new Ada.Strings.Bounded.Generic_Bounded_Length(80);
+ 
+-      use type BS1.Bounded_String,  BS20.Bounded_String, 
+-               BS40.Bounded_String, BS80.Bounded_String;
++      use BS1, BS20;
++      use type BS40.Bounded_String, BS80.Bounded_String;
+ 
+       String_1   : String(1..1)  := "A";
+       String_20  : String(1..20) := "ABCDEFGHIJKLMNOPQRST";
+@@ -94,7 +94,6 @@
+       -- Procedure Append.
+ 
+       declare
+-         use BS1, BS20;
+       begin
+          Append(Source => BString_1, New_Item => To_Bounded_String("A"));
+          Append(BString_1, "B", Ada.Strings.Left);

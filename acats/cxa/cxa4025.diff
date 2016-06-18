@@ -1,0 +1,40 @@
+--- acats_40k/cxa/cxa4025.a
++++ cxa/cxa4025.a
+@@ -50,6 +50,7 @@
+ end CXA4025_0;
+ 
+ with Ada.Characters.Handling;
++with Ada.Wide_Characters.Handling;
+ package body CXA4025_0 is
+       -- Function Map_To_Lower_Case will return the lower case form of 
+       -- Wide_Characters in the range 'A'..'Z' only, and return the input
+@@ -71,9 +72,7 @@
+       function Map_To_Upper_Case (From : Wide_Character) 
+         return Wide_Character is
+       begin
+-         return Ada.Characters.Handling.To_Wide_Character(
+-                  Ada.Characters.Handling.To_Upper(
+-                    Ada.Characters.Handling.To_Character(From)));
++         return Ada.Wide_Characters.Handling.To_Upper(From);
+       end Map_To_Upper_Case;
+ 
+ end CXA4025_0;
+@@ -105,6 +104,9 @@
+       use Ada.Exceptions;
+       use type Wide_Maps.Wide_Character_Set; 
+ 
++      UC_Y_Diaeresis    : constant String :=
++                            Character'Val (16#C5#) & Character'Val (16#B8#);
++
+       subtype LC_Characters is Wide_Character range 'a'..'z';
+ 
+       Last_Letter    : constant := 26;
+@@ -141,7 +143,7 @@
+           ACL1.UC_C_Cedilla        & ACL1.UC_E_Acute & ACL1.UC_I_Circumflex &
+           ACL1.UC_Icelandic_Eth    & ACL1.UC_N_Tilde &
+           ACL1.UC_O_Oblique_Stroke & ACL1.UC_Icelandic_Thorn &  
+-          ACL1.LC_German_Sharp_S   & ACL1.LC_Y_Diaeresis);  
++          ACL1.LC_German_Sharp_S   & UC_Y_Diaeresis); -- [drake]
+ 
+       -- Access objects that will be provided as parameters to the 
+       -- subprograms.
