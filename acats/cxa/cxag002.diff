@@ -1,0 +1,159 @@
+--- acats_40k/cxa/cxag002.a
++++ cxa/cxag002.a
+@@ -63,10 +63,23 @@
+ --!
+ with Report;
+ with Ada.Directories.Hierarchical_File_Names;  -- N/A => ERROR.
++with Ada.Directories.Equal_File_Names; -- [drake] extended unit
++with Ada.Directories.Volumes; -- [drake] extended unit
+ with Impdef;
+ with Ada.Exceptions;
+ procedure CXAG002 is
+ 
++   function Equivalent_File_Names (Left, Right : String) return Boolean is
++      FS : constant Ada.Directories.Volumes.File_System :=
++             Ada.Directories.Volumes.Where (Ada.Directories.Current_Directory);
++   begin
++      return Ada.Directories.Equal_File_Names (FS, Left, Right);
++   end Equivalent_File_Names;
++
++   Parent_Directory_Name : constant String := "..";
++
++   Current_Directory_Name : constant String := ".";
++
+    TC_Trace : constant Boolean := False; -- Output extra trace information.
+ 
+    package ADH renames Ada.Directories.Hierarchical_File_Names;
+@@ -120,13 +133,13 @@
+          -- Make checks for a single entity.
+          Init_Dir : constant String := ADH.Initial_Directory (Name);
+       begin
+-         if not Impdef.Equivalent_File_Names (Name,
++         if not Equivalent_File_Names (Name,
+              Init_Dir) then
+             Report.Failed ("Initial directory not same as Name - " &
+                             Subtest);
+          end if;
+          begin
+-             if Impdef.Equivalent_File_Names (Name,
++             if Equivalent_File_Names (Name,
+                  ADH.Relative_Name (Name)) then
+                 Report.Failed ("Relative_Name had no effect - " &
+                                 Subtest);
+@@ -146,7 +159,7 @@
+                                Subtest);
+          end;
+          begin
+-             if Impdef.Equivalent_File_Names (Name,
++             if Equivalent_File_Names (Name,
+                  ADH.Containing_Directory (Name)) then
+                 Report.Failed ("Containing_Directory had no effect - " &
+                                 Subtest);
+@@ -172,7 +185,7 @@
+                end if;
+          end;
+          begin
+-             if Impdef.Equivalent_File_Names (Name,
++             if Equivalent_File_Names (Name,
+                  ADH.Simple_Name (Name)) then
+                 if TC_Trace then
+                     Report.Comment ("  Simple_Name is identity on " &
+@@ -270,7 +283,7 @@
+             Report.Failed ("Wrong number of segments for Relative_Name - " &
+                             Subtest);
+          end if;
+-         if not Impdef.Equivalent_File_Names (Name,
++         if not Equivalent_File_Names (Name,
+              ADH.Compose (Init_Dir, Rel_Name)) then
+             Report.Failed ("Compose failed to put Humpty Dumpty back " &
+                            "together again - " & Subtest);
+@@ -315,7 +328,7 @@
+             Report.Failed ("Wrong number of segments for " &
+                            "Containing_Directory - " & Subtest);
+          end if;
+-         if not Impdef.Equivalent_File_Names (Name,
++         if not Equivalent_File_Names (Name,
+              ADH.Compose (Cont_Dir, Simple_Name)) then
+             Report.Failed ("Compose failed reconstruction - " &
+                             Subtest);
+@@ -344,12 +357,12 @@
+                               "relative name - " & Subtest);
+             end if;
+          end if;
+-         if not Impdef.Equivalent_File_Names (File1_Simple_Name.all,
++         if not Equivalent_File_Names (File1_Simple_Name.all,
+              ADH.Simple_Name (Comp)) then
+             Report.Failed ("Wrong simple name for Compose - " &
+                             Subtest);
+          end if;
+-         if not Impdef.Equivalent_File_Names (Name,
++         if not Equivalent_File_Names (Name,
+              ADH.Containing_Directory (Comp)) then
+             Report.Failed ("Wrong containing directory for Compose - " &
+                             Subtest);
+@@ -371,12 +384,12 @@
+                Report.Failed ("Compose(Simple+Relative) not " &
+                               "relative name - " & Subtest);
+             end if;
+-            if not Impdef.Equivalent_File_Names (File1_Simple_Name.all,
++            if not Equivalent_File_Names (File1_Simple_Name.all,
+                 ADH.Initial_Directory (Comp2)) then
+                Report.Failed ("Wrong initial directory for Compose - " &
+                             Subtest);
+             end if;
+-            if not Impdef.Equivalent_File_Names (Name,
++            if not Equivalent_File_Names (Name,
+                 ADH.Relative_Name (Comp2)) then
+                Report.Failed ("Wrong relative name for Compose - " &
+                                Subtest);
+@@ -389,7 +402,7 @@
+          end;
+       else
+          begin
+-             if Impdef.Equivalent_File_Names (Name,
++             if Equivalent_File_Names (Name,
+                  ADH.Compose (File1_Simple_Name.all, Name)) then
+                 Report.Failed ("Compose had no effect - " &
+                                 Subtest);
+@@ -434,14 +447,14 @@
+    File1_Simple_Name := new String'(Report.Legal_File_Name (X => 1));
+    File2_Simple_Name := new String'(Report.Legal_File_Name (X => 2));
+ 
+-   if not ADH.Is_Parent_Directory_Name (Impdef.Parent_Directory_Name) then
++   if not ADH.Is_Parent_Directory_Name (Parent_Directory_Name) then
+       Report.Failed ("Specified parent directory=" &
+-                      Impdef.Parent_Directory_Name & " is not that");
++                      Parent_Directory_Name & " is not that");
+    end if;
+ 
+-   if not ADH.Is_Current_Directory_Name (Impdef.Current_Directory_Name) then
++   if not ADH.Is_Current_Directory_Name (Current_Directory_Name) then
+       Report.Failed ("Specified current directory=" &
+-                      Impdef.Current_Directory_Name & " is not that");
++                      Current_Directory_Name & " is not that");
+    end if;
+ 
+    if ADH.Is_Current_Directory_Name (Default_Directory.all) then
+@@ -491,7 +504,7 @@
+ 
+    -- Relative: ../File2/File1
+ 
+-   Check_Relations (ADH.Compose (ADH.Compose (Impdef.Parent_Directory_Name,
++   Check_Relations (ADH.Compose (ADH.Compose (Parent_Directory_Name,
+                                               File2_Simple_Name.all),
+                                  File1_Simple_Name.all),
+                     Subtest => "Parent three");
+@@ -507,11 +520,11 @@
+                     Subtest => "Simple");
+ 
+    -- Current:
+-   Check_Relations (Impdef.Current_Directory_Name,
++   Check_Relations (Current_Directory_Name,
+                     Subtest => "Current");
+ 
+    -- Parent:
+-   Check_Relations (Impdef.Parent_Directory_Name,
++   Check_Relations (Parent_Directory_Name,
+                     Subtest => "Parent");
+ 
+    -- Root:
