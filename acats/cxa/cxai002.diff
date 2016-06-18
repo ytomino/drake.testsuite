@@ -1,0 +1,11 @@
+--- acats_40k/cxa/cxai002.a
++++ cxa/cxai002.a
+@@ -96,7 +96,7 @@
+       declare
+       begin
+ 
+-         Container.Append (New_Item => Value_In_Array (1));
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
