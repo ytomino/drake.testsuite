@@ -20,7 +20,7 @@ procedure task_cow is
 			Lists.Next (I);
 		end loop;
 		begin
-			Ada.Debug.Put (Pic.all);
+			pragma Assert (Pic.all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			raise Local_Error; -- test exception in task
 		exception
 			when Local_Error => Free (Pic);

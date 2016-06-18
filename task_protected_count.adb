@@ -15,10 +15,10 @@ procedure task_protected_count is
 			Started := True;
 		end Start;
 		entry Bottleneck when Started is
+			Count : constant Natural := Bottleneck'Count;
 		begin
 			Caller_Count := Caller_Count - 1;
-			Ada.Debug.Put (Integer'Image (Bottleneck'Count));
-			pragma Assert (Bottleneck'Count = Caller_Count);
+			pragma Assert (Count = Caller_Count);
 		end Bottleneck;
 	end Callee;
 	-- callers
@@ -33,5 +33,6 @@ begin
 	delay 0.1;
 	Callee.Start;
 	delay 0.1;
+	pragma Assert (Caller_Count = 0);
 	pragma Debug (Ada.Debug.Put ("OK"));
 end task_protected_count;

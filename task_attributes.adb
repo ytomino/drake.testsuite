@@ -6,6 +6,7 @@ with Ada.Unchecked_Conversion;
 with System.Tasks;
 procedure task_attributes is
 	Count : constant := 3;
+	Flags : array (1 .. Count) of Boolean := (others => False);
 	function Cast is new Ada.Unchecked_Conversion (
 		System.Tasks.Task_Id,
 		Ada.Task_Identification.Task_Id);
@@ -13,9 +14,7 @@ procedure task_attributes is
 	procedure Process (Param : System.Address) is
 	begin
 		delay 0.1;
-		Ada.Debug.Put (
-			Ada.Task_Identification.Image (Ada.Task_Identification.Current_Task)
-			& Integer'Image (Attr.Value));
+		Flags (Attr.Value) := True;
 	end Process;
 	Ts : array (1 .. Count) of System.Tasks.Task_Id;
 	Aborted : Boolean;
@@ -27,5 +26,6 @@ begin
 	for I in Ts'Range loop
 		System.Tasks.Wait (Ts (I), Aborted => Aborted);
 	end loop;
+	pragma Assert (for all I in Flags'Range => Flags (I));
 	pragma Debug (Ada.Debug.Put ("OK"));
 end task_attributes;

@@ -30,6 +30,9 @@ begin
 	pragma Assert (not Ada.Tags.Is_Abstract (T'Tag));
 	pragma Assert (Ada.Tags.Is_Abstract (I'Tag));
 	declare
+		type T_Access is access all T'Class;
+		function T_Cast is
+			new Ada.Unchecked_Conversion (T_Access, System.Address);
 		Obj : aliased DI;
 		Ref : access T'Class := Obj'Access;
 		IRef : access I'Class := Obj'Access;
@@ -39,8 +42,10 @@ begin
 		pragma Assert (IRef'Tag = DI'Tag);
 		declare
 			type IA is access all I'Class;
+			function I_Cast is new Ada.Unchecked_Conversion (IA, System.Address);
 			IRef2 : access I'Class := IA (Ref);
 		begin
+			pragma Assert (T_Cast (Ref) /= I_Cast (IRef2));
 			null;
 		end;
 	end;

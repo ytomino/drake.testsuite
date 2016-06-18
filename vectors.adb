@@ -131,7 +131,6 @@ procedure vectors is
 			Append (X, I);
 		end loop;
 		-- accessor
-		-- ada.debug.put (string(X.Reference (1, 26).Element.all));
 		pragma Assert (X.Reference.Element.all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 		pragma Assert (X.Reference.Element (1 .. 26) = "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 		pragma Assert (X.Reference.Element (2 .. 3) = "BC");

@@ -72,8 +72,6 @@ procedure real_arrays is
 			pragma Assert (Data1 - Data2 = (4.0, 3.0));
 			pragma Assert (Data1 * 2.0 = (6.0, 8.0));
 			M := Data1 * Data2;
-			--Ada.Text_IO.Put_Line (M (1, 1)'Img & M (1, 2)'Img);
-			--Ada.Text_IO.Put_Line (M (2, 1)'Img & M (2, 2)'Img);
 			pragma Assert (M = (
 				(-3.0, 3.0),
 				(-4.0, 4.0)));

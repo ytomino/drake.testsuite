@@ -3,7 +3,7 @@ with Ada.Task_Identification;
 procedure protected_entry is
 	use type Ada.Task_Identification.Task_Id;
 begin
-	Ada.Debug.Put ("entries only");
+	-- entries only
 	declare
 		protected CS1 is
 			entry Enter;
@@ -25,7 +25,7 @@ begin
 		CS1.Enter;
 		CS1.Leave;
 	end;
-	Ada.Debug.Put ("entries and subprograms");
+	-- entries and subprograms
 	declare
 		protected CS2 is
 			entry Enter (Current_Task : Ada.Task_Identification.Task_Id := Ada.Task_Identification.Current_Task);

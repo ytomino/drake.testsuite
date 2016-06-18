@@ -20,6 +20,8 @@ begin
 	Now_CT := Ada.Execution_Time.Clock;
 	Put ("Real Time: "); Put (Ada.Real_Time.To_Duration (Now_RT - First_RT)); New_Line;
 	Put ("CPU Time:  "); PUt (Ada.Real_Time.To_Duration (Now_CT - First_CT)); New_Line;
+	pragma Assert (Ada.Real_Time.To_Duration (Now_RT - First_RT) >= 1.0);
+	pragma Assert (Ada.Real_Time.To_Duration (Now_CT - First_CT) < 0.5);
 	-- Time_Span
 	pragma Assert (Ada.Real_Time.To_Time_Span (1.0) + Ada.Real_Time.To_Time_Span (2.0) = Ada.Real_Time.To_Time_Span (3.0));
 	pragma Assert (Ada.Real_Time.To_Time_Span (3.0) - Ada.Real_Time.To_Time_Span (2.0) = Ada.Real_Time.To_Time_Span (1.0));

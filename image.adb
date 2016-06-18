@@ -280,8 +280,8 @@ begin
 					Ordinal_Fixed'Base'Value (Ordinal_Fixed'Image (Ordinal_Fixed'Last)));
 		begin
 			Ada.Debug.Put (Integer'Image (T'Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Wide_Width));
+			pragma Assert (T'Wide_Width = T'Width);
+			pragma Assert (T'Wide_Wide_Width = T'Width);
 			pragma Assert (T'Fore = 3); -- "-99"
 			null;
 		end;
@@ -289,8 +289,8 @@ begin
 			subtype T is Short_Fixed range Short_Fixed'First .. Short_Fixed'Value (Short_Fixed'Image (Short_Fixed'Last));
 		begin
 			Ada.Debug.Put (Integer'Image (T'Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Wide_Width));
+			pragma Assert (T'Wide_Width = T'Width);
+			pragma Assert (T'Wide_Wide_Width = T'Width);
 			pragma Assert (T'Fore = 2); -- "-0"
 			null;
 		end;
@@ -298,8 +298,8 @@ begin
 			subtype T is Long_Fixed range Long_Fixed'First .. Long_Fixed'Value (Long_Fixed'Image (Long_Fixed'Last));
 		begin
 			Ada.Debug.Put (Integer'Image (T'Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Width));
-			Ada.Debug.Put (Integer'Image (T'Wide_Wide_Width));
+			pragma Assert (T'Wide_Width = T'Width);
+			pragma Assert (T'Wide_Wide_Width = T'Width);
 			pragma Assert (T'Fore = 10); -- sign + 9 columns
 			null;
 		end;

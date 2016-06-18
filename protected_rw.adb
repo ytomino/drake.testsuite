@@ -2,23 +2,25 @@
 with Ada;
 procedure protected_rw is
 	protected RW is
-		procedure Sync_Proc;
+		procedure Sync_Proc (Value : Integer);
 		function Sync_Func return Integer;
+	private
+		Value : Integer := 0;
 	end RW;
 	protected body RW is
-		procedure Sync_Proc is
+		procedure Sync_Proc (Value : Integer) is
 		begin
-			Ada.Debug.Put ("Ahaha");
+			RW.Value := Value;
 		end Sync_Proc;
 		function Sync_Func return Integer is
 		begin
-			Ada.Debug.Put ("Ufufu");
-			return 0;
+			return Value;
 		end Sync_Func;
 	end RW;
-	Dummy : Integer;
+	Value : Integer;
 begin
-	RW.Sync_Proc;
-	Dummy := RW.Sync_Func;
+	RW.Sync_Proc (10);
+	Value := RW.Sync_Func;
+	pragma Assert (Value = 10);
 	pragma Debug (Ada.Debug.Put ("OK"));
 end protected_rw;

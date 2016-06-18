@@ -12,9 +12,12 @@ procedure task_count is
 		accept Start;
 		while Caller_Count > 0 loop
 			accept Bottleneck do
-				Caller_Count := Caller_Count - 1;
-				Ada.Debug.Put (Integer'Image (Bottleneck'Count));
-				pragma Assert (Bottleneck'Count = Caller_Count);
+				declare
+					Count : constant Natural := Bottleneck'Count;
+				begin
+					Caller_Count := Caller_Count - 1;
+					pragma Assert (Count = Caller_Count);
+				end;
 			end Bottleneck;
 		end loop;
 	end Callee;
@@ -30,5 +33,6 @@ begin
 	delay 0.1;
 	Callee.Start;
 	delay 0.1;
+	pragma Assert (Caller_Count = 0);
 	pragma Debug (Ada.Debug.Put ("OK"));
 end task_count;

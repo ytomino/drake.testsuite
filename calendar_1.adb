@@ -28,7 +28,6 @@ procedure calendar_1 is
 	Day_Name : Ada.Calendar.Formatting.Day_Name;
 	Remaked : Ada.Calendar.Time;
 begin
-	pragma Debug (Ada.Debug.Put ("assertion enabled"));
 	Put (To_Integer (Now), Base => 16); New_Line;
 	Ada.Calendar.Split (Now, Year, Month, Day, Seconds);
 	Ada.Calendar.Formatting.Split (Seconds, H, M, S, SS);
@@ -72,16 +71,21 @@ begin
 	begin
 		Ada.Debug.Put (Img);
 		Remaked := Ada.Calendar.Formatting.Value (Img);
-		Ada.Debug.Put (Ada.Calendar.Formatting.Image (Remaked, Include_Time_Fraction => True));
+		pragma Assert (
+			Ada.Calendar.Formatting.Image (Remaked,
+				Include_Time_Fraction => True) =
+			Img);
 	end;
 	declare
 		X : Duration := Duration'(((15.0 * 60.0) + 25.0) * 60.0 + 35.45);
 		Img : String := Ada.Calendar.Formatting.Image (X, Include_Time_Fraction => True);
 		RX : Duration;
 	begin
-		Ada.Debug.Put (Img);
+		pragma Assert (Img = "15:25:35.45");
 		RX := Ada.Calendar.Formatting.Value (Img);
-		Ada.Debug.Put (Ada.Calendar.Formatting.Image (RX, Include_Time_Fraction => True));
+		pragma Assert (
+			Ada.Calendar.Formatting.Image (RX, Include_Time_Fraction => False) =
+			"15:25:35");
 		pragma Assert (RX = X);
 	end;
 	declare -- elapsed time
@@ -90,10 +94,8 @@ begin
 		Neg : constant Duration := -((23.0 * 60.0 + 30.0) * 60.0 + 30.0);
 		Neg_S : constant String := Ada.Calendar.Formatting.Image (Neg, Include_Time_Fraction => False);
 	begin
-		Ada.Debug.Put (Max_S);
 		pragma Assert (Max_S = "23:59:59.99");
 		pragma Assert (Ada.Calendar.Formatting.Value (Max_S) = Max);
-		Ada.Debug.Put (Neg_S);
 		pragma Assert (Neg_S = "-23:30:30");
 		pragma Assert (Ada.Calendar.Formatting.Value (Neg_S) = Neg);
 	end;
@@ -102,21 +104,15 @@ begin
 		EL : Ada.Calendar.Time;
 	begin
 		EF := Ada.Calendar.Time_Of (1901, 1, 1);
-		Ada.Calendar.Formatting.Split (EF, Year, Month, Day, H, M, S, SS, LS);
-		Output_EF_Full : begin
-			Put ("EF ");
-			Put (Year, Width => 4); Put ('-'); Put (Month, Width => 2); Put ('-'); Put (Day, Width => 2); Put (' ');
-			Put (H, Width => 2); Put (':'); Put (M, Width => 2); Put (':'); Put (S, Width => 2); Put (' ');
-			Put (SS, Fore => 1); New_Line;
-		end Output_EF_Full;
+		Ada.Calendar.Split (EF, Year, Month, Day, Seconds);
+		pragma Assert (
+			Year = 1901 and then Month = 1 and then Day = 1
+			and then Seconds = 0.0);
 		EL := Ada.Calendar.Time_Of (2099, 12, 31);
-		Ada.Calendar.Formatting.Split (EL, Year, Month, Day, H, M, S, SS, LS);
-		Output_EL_Full : begin
-			Put ("EL ");
-			Put (Year, Width => 4); Put ('-'); Put (Month, Width => 2); Put ('-'); Put (Day, Width => 2); Put (' ');
-			Put (H, Width => 2); Put (':'); Put (M, Width => 2); Put (':'); Put (S, Width => 2); Put (' ');
-			Put (SS, Fore => 1); New_Line;
-		end Output_EL_Full;
+		Ada.Calendar.Split (EL, Year, Month, Day, Seconds);
+		pragma Assert (
+			Year = 2099 and then Month = 12 and then Day = 31
+			and then Seconds = 0.0);
 	exception
 		when Ada.Calendar.Time_Error => Ada.Debug.Put ("Time_Error");
 	end;
