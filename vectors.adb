@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Characters.ASCII.Handling;
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Limited_Vectors;

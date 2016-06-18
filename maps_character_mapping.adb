@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Strings.Fixed;
 with Ada.Strings.Maps;
 procedure maps_character_mapping is

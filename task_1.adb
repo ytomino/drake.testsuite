@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 with System.Tasks; -- primitives
 procedure task_1 is

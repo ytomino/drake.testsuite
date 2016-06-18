@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 procedure protected_rw is
 	protected RW is

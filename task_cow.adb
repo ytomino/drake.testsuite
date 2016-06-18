@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Unchecked_Deallocation;
 with System.Tasks;

@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Tags.Generic_Dispatching_Constructor;
 procedure dispatching_constructor is
 	package Root is
@@ -23,4 +24,5 @@ procedure dispatching_constructor is
 	Obj : Root.T'Class := Virtual_Create (Derived.T'Tag, Params'Access);
 begin
 	Ada.Debug.Put (Ada.Tags.Expanded_Name (Obj'Tag));
+	pragma Debug (Ada.Debug.Put ("OK"));
 end dispatching_constructor;

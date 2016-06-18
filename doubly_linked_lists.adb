@@ -1,23 +1,13 @@
+-- { dg-do run }
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Indefinite_Doubly_Linked_Lists;
 with Ada.Containers.Limited_Doubly_Linked_Lists;
 with Ada.Streams.Unbounded_Storage_IO;
--- with Ada.Text_IO;
 procedure doubly_linked_lists is
 	use type Ada.Containers.Count_Type;
 	package Lists is new Ada.Containers.Doubly_Linked_Lists (Character);
 	package ILists is new Ada.Containers.Indefinite_Doubly_Linked_Lists (Character);
 	package LLists is new Ada.Containers.Limited_Doubly_Linked_Lists (Character);
---	procedure Dump (X : Lists.List) is
---		I : Lists.Cursor := X.First;
---	begin
---		while Lists.Has_Element (I) loop
---			Ada.Text_IO.Put (Lists.Element (I)'Img);
---			Ada.Text_IO.Put (", ");
---			Lists.Next (I);
---		end loop;
---		Ada.Text_IO.New_Line;
---	end Dump;
 	procedure Test_01 is
 		X : Lists.List;
 	begin

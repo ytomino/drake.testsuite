@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Containers.Indefinite_Holders;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure holders is

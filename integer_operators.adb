@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 procedure integer_operators is
 	generic

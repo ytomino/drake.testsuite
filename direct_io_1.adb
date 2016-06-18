@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Direct_IO;
 procedure direct_io_1 is
 	package Character_IO is new Ada.Direct_IO (Character);

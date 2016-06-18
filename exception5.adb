@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 procedure exception5 is

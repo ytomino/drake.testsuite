@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 procedure task_protected_count is
 	Caller_Count : Natural := 3;

@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Unchecked_Deallocation;
 procedure task_rendezvous is
 begin

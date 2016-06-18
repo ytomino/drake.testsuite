@@ -1,8 +1,8 @@
+-- { dg-do run }
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Containers.Limited_Hashed_Maps;
 with Ada.Streams.Unbounded_Storage_IO;
--- with Ada.Text_IO;
 procedure hashed_maps is
 	use type Ada.Containers.Count_Type;
 	function Hash (X : Character) return Ada.Containers.Hash_Type is
@@ -24,18 +24,6 @@ procedure hashed_maps is
 		Integer,
 		Hash => Hash,
 		Equivalent_Keys => "=");
---	procedure Dump (X : Maps.Map) is
---		I : Maps.Cursor := X.First;
---	begin
---		while Maps.Has_Element (I) loop
---			Ada.Text_IO.Put (Maps.Key(I)'Img);
---			Ada.Text_IO.Put (" =");
---			Ada.Text_IO.Put (Maps.Element(I)'Img);
---			Ada.Text_IO.Put (", ");
---			Maps.Next (I);
---		end loop;
---		Ada.Text_IO.New_Line;
---	end Dump;
 	procedure Test_01 is
 		X : Maps.Map;
 	begin

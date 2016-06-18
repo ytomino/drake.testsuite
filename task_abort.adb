@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Calendar;
 with Ada.Synchronous_Task_Control;
 with System.Native_Tasks.Yield;

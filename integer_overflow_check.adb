@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 with Interfaces;
 procedure integer_overflow_check is

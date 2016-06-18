@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 with Interfaces;
 procedure array_operators is
@@ -270,6 +271,6 @@ procedure array_operators is
 	procedure ts_u64a is new Generic_Test_Indexing (Interfaces.Unsigned_64, u64a);
 	pragma Debug (ts_u64a);
 begin
-	pragma Assert (Ada.Debug.Put ("OK"));
+	pragma Debug (Ada.Debug.Put ("OK"));
 	null;
 end array_operators;

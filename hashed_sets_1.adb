@@ -1,8 +1,8 @@
+-- { dg-do run }
 with Ada.Containers.Hashed_Sets;
 with Ada.Containers.Indefinite_Hashed_Sets;
 with Ada.Containers.Limited_Hashed_Sets;
 with Ada.Streams.Unbounded_Storage_IO;
--- with Ada.Text_IO;
 procedure hashed_sets_1 is
 	use type Ada.Containers.Count_Type;
 	function Hash (X : Integer) return Ada.Containers.Hash_Type is
@@ -21,15 +21,6 @@ procedure hashed_sets_1 is
 		Integer,
 		Hash => Hash,
 		Equivalent_Elements => "=");
---	procedure Dump (X : Sets.Set) is
---		I : Sets.Cursor := X.First;
---	begin
---		while Sets.Has_Element (I) loop
---			Ada.Text_IO.Put (Sets.Element(I)'Img);
---			Sets.Next (I);
---		end loop;
---		Ada.Text_IO.New_Line;
---	end Dump;
 	procedure Test_01 is
 		X : Sets.Set;
 	begin

@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Unchecked_Deallocation;
 with System.Formatting;
 with System.Storage_Elements;
@@ -58,4 +59,5 @@ begin
 		Put (System_Allocators.Allocated_Size (x));
 		System_Allocators.Free (x);
 	end;
+	pragma Debug (Ada.Debug.Put ("OK"));
 end standard_allocators;

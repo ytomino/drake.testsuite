@@ -1,3 +1,5 @@
+-- { dg-do link }
+-- Please try with sh: ../bin/interrupts & sleep 3 && kill -SIGINT $!
 with Ada.Interrupts.Names;
 with Ada.Text_IO; use Ada.Text_IO;
 procedure interrupts is

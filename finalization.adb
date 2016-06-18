@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Finalization;
 procedure finalization is
 	type C is new Ada.Finalization.Controlled with null record;
@@ -29,4 +30,5 @@ begin
 	begin
 		null;
 	end;
+	pragma Debug (Ada.Debug.Put ("OK"));
 end finalization;

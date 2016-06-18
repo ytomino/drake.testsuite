@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Containers.Indefinite_Ordered_Sets;
 with Ada.Containers.Limited_Ordered_Sets;
 with Ada.Containers.Ordered_Sets;

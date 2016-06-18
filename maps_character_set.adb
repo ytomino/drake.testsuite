@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Integer_Text_IO;
 with Ada.Wide_Wide_Text_IO;
 with Ada.Strings.Maps.Constants;

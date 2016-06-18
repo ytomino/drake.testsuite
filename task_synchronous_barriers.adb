@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Real_Time;
 with Ada.Synchronous_Barriers;
 with Ada.Synchronous_Task_Control;
@@ -10,7 +11,7 @@ begin
 		ev : Ada.Synchronous_Task_Control.Suspension_Object;
 		State : Boolean;
 	begin
---		pragma Assert (not Ada.Synchronous_Task_Control.Current_State (ev));
+		pragma Assert (not Ada.Synchronous_Task_Control.Current_State (ev));
 		Ada.Synchronous_Task_Control.Set_True (ev);
 		pragma Assert (Ada.Synchronous_Task_Control.Current_State (ev));
 		Ada.Synchronous_Task_Control.Suspend_Until_True (ev);

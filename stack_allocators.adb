@@ -1,4 +1,4 @@
--- secondary stack
+-- { dg-do run }
 with Ada.Exceptions;
 with System.Formatting.Address;
 with System.Runtime_Context;
@@ -20,7 +20,6 @@ procedure stack_allocators is
 		S0 : String := (1 .. 16 * 1024 => <>);
 		S1 : String := Paren (S0);
 	begin
---		Dump_Secondary_Stack;
 		if N < 50 then
 			if N mod 7 /= 0 then
 				Heavy_Use (N + 3);

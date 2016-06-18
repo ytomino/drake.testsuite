@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Task_Identification;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;

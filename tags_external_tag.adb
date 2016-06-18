@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Tags;
 with Ada.Finalization;
 procedure tags_external_tag is

@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Tags;
 with Ada.Unchecked_Conversion;
 with System.Storage_Elements.Formatting;

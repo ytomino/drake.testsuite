@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Asynchronous_Task_Control;
 with Ada.Task_Attributes;
 with Ada.Task_Identification;

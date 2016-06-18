@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Task_Identification;
 procedure task_caller is
 	use type Ada.Task_Identification.Task_Id;

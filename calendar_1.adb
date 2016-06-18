@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
 with Ada.Integer_Text_IO;

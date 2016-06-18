@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Containers.Synchronized_Queue_Interfaces;
 with Ada.Containers.Unbounded_Priority_Queues;
 with Ada.Containers.Unbounded_Synchronized_Queues;
@@ -48,5 +49,4 @@ begin
 		Test (X, "ABC", "CBA");
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
-	null;
 end synchronized_queues;

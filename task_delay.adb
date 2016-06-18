@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Real_Time;
 procedure task_delay is
 	use type Ada.Real_Time.Time_Span;

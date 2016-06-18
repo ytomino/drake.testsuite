@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Containers.Hashed_Sets;
 with Ada.Containers.Indefinite_Hashed_Sets;
 with Ada.Containers.Limited_Hashed_Sets;

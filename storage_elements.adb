@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada;
 with System.Storage_Elements;
 procedure storage_elements is

@@ -1,25 +1,13 @@
+-- { dg-do run }
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Containers.Limited_Ordered_Maps;
 with Ada.Containers.Ordered_Maps;
 with Ada.Streams.Unbounded_Storage_IO;
--- with Ada.Text_IO;
 procedure ordered_maps is
 	use type Ada.Containers.Count_Type;
 	package Maps is new Ada.Containers.Ordered_Maps (Character, Integer);
 	package IMaps is new Ada.Containers.Indefinite_Ordered_Maps (Character, Integer);
 	package LMaps is new Ada.Containers.Limited_Ordered_Maps (Character, Integer);
---	procedure Dump (X : Maps.Map) is
---		I : Maps.Cursor := X.First;
---	begin
---		while Maps.Has_Element (I) loop
---			Ada.Text_IO.Put (Maps.Key(I)'Img);
---			Ada.Text_IO.Put (" =");
---			Ada.Text_IO.Put (Maps.Element(I)'Img);
---			Ada.Text_IO.Put (", ");
---			Maps.Next (I);
---		end loop;
---		Ada.Text_IO.New_Line;
---	end Dump;
 	procedure Test_01 is
 		X : Maps.Map;
 	begin

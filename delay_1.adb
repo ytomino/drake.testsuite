@@ -1,3 +1,4 @@
+-- { dg-do run }
 with Ada.Execution_Time;
 with Ada.Real_Time;
 with Ada.Text_IO;
