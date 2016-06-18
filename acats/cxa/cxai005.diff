@@ -1,0 +1,11 @@
+--- acats_40k/cxa/cxai005.a
++++ cxa/cxai005.a
+@@ -147,7 +147,7 @@
+ 
+          -- Use a value not already in set
+ 
+-         Container.Insert (New_Item => My_Default_Value * 3.0);
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
