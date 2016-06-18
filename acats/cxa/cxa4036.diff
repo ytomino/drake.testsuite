@@ -1,0 +1,118 @@
+--- acats_40k/cxa/cxa4036.a
++++ cxa/cxa4036.a
+@@ -49,8 +49,10 @@
+ --
+ --!
+ 
++with Ada.Characters.Latin_1;
+ with Ada.Strings.UTF_Encoding.Conversions;
+ with Ada.Strings.UTF_Encoding.Strings;
++with Ada.Strings.UTF_Encoding.Wide_Strings;
+ 
+ with Report;
+ with Ada.Exceptions;
+@@ -94,8 +96,21 @@
+ 
+    use Ada.Exceptions;
+ 
++   package Latin_1 renames Ada.Characters.Latin_1;
++
+    -- A string with various characters from the upper half of Latin-1:
+-   Test_String : constant String := To_String ("A1 A2 B3 B4 C5 C6 D7 D8 E9 EA FB FC");
++   Test_String : constant String := Latin_1.Inverted_Exclamation & -- A1
++                                    Latin_1.Cent_Sign            & -- A2
++                                    Latin_1.Superscript_Three    & -- B3
++                                    Latin_1.Acute                & -- B4
++                                    Latin_1.UC_A_Ring            & -- C5
++                                    Latin_1.UC_AE_Diphthong      & -- C6
++                                    Latin_1.Multiplication_Sign  & -- D7
++                                    Latin_1.UC_O_Oblique_Stroke  & -- D8
++                                    Latin_1.LC_E_Acute           & -- E9
++                                    Latin_1.LC_E_Circumflex      & -- EA
++                                    Latin_1.LC_U_Circumflex      & -- FB
++                                    Latin_1.LC_U_Diaeresis;        -- FC
+ begin
+    Report.Test ("CXA4036",
+                 "Check encoding, decoding and conversions between regular " &
+@@ -152,8 +167,10 @@
+ 
+    -- Check that conversions output BOM iff requested
+    declare
+-      S1 : constant UTF_String := Convert ("Hello, Ada", Output_BOM => True);
+-      S2 : constant UTF_String := Convert ("Hello, Ada", Output_BOM => False);
++      S1 : constant UTF_String :=
++             Convert (UTF_16_Wide_String'("Hello, Ada"), Output_BOM => True);
++      S2 : constant UTF_String :=
++             Convert (UTF_16_Wide_String'("Hello, Ada"), Output_BOM => False);
+    begin
+       if S1 (1..3) /= BOM_8 then
+ 	 Report.Failed ("Missing BOM at start of string");
+@@ -166,7 +183,7 @@
+    -- Check that the lower bound is 1
+    declare
+       S : constant String (10..21) := "Elle souffle";
+-      U : UTF_8_String (10..24) := BOM_8 & To_String ("c3a0 c3a9 69 c3b4 c3bc e282ac"); -- "àéiôü€"
++      U : UTF_8_String (10..24) := BOM_8 & To_String ("c3a0 c3a9 69 c3b4 c3bc e282ac"); -- "Ã Ã©iÃ´Ã¼â‚¬"
+    begin
+       if Encode (S, UTF_8)'First /= 1 then
+ 	 Report.Failed ("Lower bound of result is not 1 (1)");
+@@ -210,7 +227,7 @@
+ 
+    -- Check detection (or not) of overlong encoding - Convert
+    declare
+-      U : constant UTF_8_String := To_String ("F0 82 82 AC");  -- Overlong €
++      U : constant UTF_8_String := To_String ("F0 82 82 AC");  -- Overlong â‚¬
+    begin
+       if Convert (U, Input_Scheme => UTF_8, Output_Scheme => UTF_8) = To_String ("e282ac") then
+ 	 Report.Comment ("Convert of overlong encoding accepted with correct result");
+@@ -312,13 +329,12 @@
+    declare
+       U : constant UTF_String := To_String ("CE91");  -- UTF_8 Greek Alpha
+    begin
+-      if Decode (U) /= "" then
+-	 null;
++      if Wide_Strings.Decode (U) /= (1 => Wide_Character'Val (16#0391#)) then
++         Report.Failed ("Value above 16#ff# accepted with incorrect result (1)");
+       end if;
+-      Report.Failed ("Value above 16#ff# did not raise Encoding_Error (1)");
+    exception
+       when Encoding_Error =>
+-	 null;
++         Report.Failed ("Value above 16#ff# raised Encoding_Error (1)");
+       when Occur : others =>
+ 	 Report.Failed ("Other exception (8)");
+ 	 Report.Comment ("Exception message: " & Exception_Message (Occur));
+@@ -327,13 +343,12 @@
+    declare
+       U : constant UTF_String := To_String ("0391");  -- UTF_16BE Greek Alpha
+    begin
+-      if Decode (U, Input_Scheme => UTF_16BE) /= "" then
+-	 null;
++      if Wide_Strings.Decode (U, Input_Scheme => UTF_16BE) /= (1 => Wide_Character'Val (16#0391#)) then
++         Report.Failed ("Value above 16#ff# accepted with incorrect result (2)");
+       end if;
+-      Report.Failed ("Value above 16#ff# did not raise Encoding_Error (2)");
+    exception
+       when Encoding_Error =>
+-	 null;
++         Report.Failed ("Value above 16#ff# raised Encoding_Error (2)");
+       when Occur : others =>
+ 	 Report.Failed ("Other exception (9)");
+ 	 Report.Comment ("Exception message: " & Exception_Message (Occur));
+@@ -342,13 +357,12 @@
+    declare
+       U : constant UTF_String := BOM_16LE & To_String ("9103");  -- UTF_16LE Greek Alpha
+    begin
+-      if Decode (U, Input_Scheme => UTF_16LE) /= "" then
+-	 null;
++      if Wide_Strings.Decode (U, Input_Scheme => UTF_16LE) /= (1 => Wide_Character'Val (16#0391#)) then
++         Report.Failed ("Value above 16#ff# accepted with incorrect result (2)");
+       end if;
+-      Report.Failed ("Value above 16#ff# did not raise Encoding_Error (3)");
+    exception
+       when Encoding_Error =>
+-	 null;
++         Report.Failed ("Value above 16#ff# raised Encoding_Error (3)");
+       when Occur : others =>
+ 	 Report.Failed ("Other exception (10)");
+ 	 Report.Comment ("Exception message: " & Exception_Message (Occur));
