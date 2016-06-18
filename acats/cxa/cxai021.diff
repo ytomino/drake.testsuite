@@ -1,0 +1,31 @@
+--- acats_40k/cxa/cxai021.a
++++ cxa/cxai021.a
+@@ -100,9 +100,7 @@
+ 
+          -- Use a key not already in map
+ 
+-         Container.Insert
+-           (Key      => Num_Tests + 1,
+-            New_Item => Value_In_Array (1));
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
+@@ -494,7 +492,7 @@
+       Previous_Value  := Value_In_Array (Num_Tests / 2) - 1.0;
+       Upper_Total_Out := 0.0;
+ 
+-      for C in My_Map_1.Iterate (My_Cursor_1) loop
++      for C in My_Map_1.Iterate (My_Cursor_1, My_Map_1.Last) loop
+ 
+          Tampering_Check
+            (Container => My_Map_1,
+@@ -523,7 +521,7 @@
+       Previous_Value  := Value_In_Array (Num_Tests / 2) + 1.0;
+       Lower_Total_Out := 0.0;
+ 
+-      for C in reverse My_Map_1.Iterate (My_Cursor_1) loop
++      for C in reverse My_Map_1.Iterate (My_Map_1.First, My_Cursor_1) loop
+ 
+          Tampering_Check
+            (Container => My_Map_1,

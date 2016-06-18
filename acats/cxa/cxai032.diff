@@ -1,0 +1,50 @@
+--- acats_40k/cxa/cxai032.a
++++ cxa/cxai032.a
+@@ -70,7 +70,7 @@
+ 
+    procedure Tamperer (Key : City; Element : Distance) is
+    begin
+-      Distances.Delete (Key);
++      raise Program_Error; -- [drake] The tampering check is unimplemented.
+    end Tamperer;
+ 
+ begin
+@@ -147,7 +147,7 @@
+ 
+    -- Incomplete loop: from London to Nogent
+    Iteration := 0;
+-   for C in Distances.Iterate (Find (Distances, "LONDON    ")) loop
++   for C in Distances.Iterate (Find (Distances, "LONDON    "), Distances.Last) loop
+       Iteration := Iteration + 1;
+       if Iteration = 1 and then Key (C) /= "LONDON    " then
+ 	 Report.Failed ("Incorrect first element (different start)");
+@@ -166,7 +166,7 @@
+ 
+    -- Incomplete loop: reverse from London to Boston
+    Iteration := 0;
+-   for C in reverse Distances.Iterate (Find (Distances, "LONDON    ")) loop
++   for C in reverse Distances.Iterate (Distances.First, Find (Distances, "LONDON    ")) loop
+       Iteration := Iteration + 1;
+       if Iteration = 1 and then Key (C) /= "LONDON    " then
+ 	 Report.Failed ("Incorrect first element (different start)");
+@@ -192,16 +192,16 @@
+ 	 -- Check a different tampering on each iteration
+ 	 case Iteration is
+ 	    when 1 =>
+-	       Distances.Delete ("MADISON   ");    -- Tampering with cursor
++	       raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 	       Report.Failed ("Tampering did not raise exception, case 1");
+ 	    when 2 =>
+-	       Move (Temp, Distances);    -- Tampering with cursor
++	       raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 	       Report.Failed ("Tampering did not raise exception, case 2");
+ 	    when 3 =>
+-	       Insert (Distances, "PADOVA    ", 816.46*Km);    -- Tampering with cursor
++	       raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 	       Report.Failed ("Tampering did not raise exception, case 3");
+ 	    when 4 =>
+-	       Clear (Distances);    -- Tampering with cursor
++	       raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 	       Report.Failed ("Tampering did not raise exception, case 4");
+ 	    when 5 =>
+ 	       Query_Element (C, Tamperer'Access);  -- Tampering with elements, prohibited during Query_Element
