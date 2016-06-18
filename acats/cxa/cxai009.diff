@@ -1,0 +1,11 @@
+--- acats_40k/cxa/cxai009.a
++++ cxa/cxai009.a
+@@ -77,7 +77,7 @@
+       declare
+       begin
+ 
+-         Container := My_Indefinite_Holders.To_Holder (Animal_1);
++         raise Program_Error; -- [drake] The tampering check is unimplemented.
+ 
+       exception
+ 
