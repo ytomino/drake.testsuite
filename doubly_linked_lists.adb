@@ -9,7 +9,8 @@ procedure doubly_linked_lists is
 	package ILists is new Ada.Containers.Indefinite_Doubly_Linked_Lists (Character);
 	package LLists is new Ada.Containers.Limited_Doubly_Linked_Lists (Character);
 	pragma Unreferenced (LLists);
-	procedure Test_01 is
+begin
+	declare -- Append
 		X : Lists.List;
 	begin
 		Lists.Append (X, 'A');
@@ -24,9 +25,8 @@ procedure doubly_linked_lists is
 		pragma Assert (X.Length = 3);
 		pragma Assert (Lists.Element (X.First) = 'A');
 		pragma Assert (Lists.Element (X.Last) = 'C');
-	end Test_01;
-	pragma Debug (Test_01);
-	procedure Test_02 is
+	end;
+	declare -- Iterate
 		use type Lists.Cursor;
 		X : aliased Lists.List;
 		C : Character;
@@ -112,9 +112,8 @@ procedure doubly_linked_lists is
 				Lists.Previous (I);
 			end loop;
 		end;
-	end Test_02;
-	pragma Debug (Test_02);
-	procedure Test_03 is
+	end;
+	declare -- Reverse_Elements, Swap_Links
 		X : Lists.List;
 		I : Lists.Cursor;
 	begin
@@ -162,9 +161,8 @@ procedure doubly_linked_lists is
 				Lists.Previous (I);
 			end loop;
 		end;
-	end Test_03;
-	pragma Debug (Test_03);
-	procedure Test_04 is
+	end;
+	declare -- Splice
 		use type Lists.Cursor;
 		X : Lists.List;
 		Y : Lists.List;
@@ -180,9 +178,8 @@ procedure doubly_linked_lists is
 		pragma Assert (Y.Length = 0);
 		pragma Assert (Y.First = Lists.No_Element);
 		pragma Assert (Y.Last = Lists.No_Element);
-	end Test_04;
-	pragma Debug (Test_04);
-	procedure Test_05 is
+	end;
+	declare -- Sort
 		use type Lists.List;
 		package Sorting is new Lists.Generic_Sorting;
 		X : Lists.List;
@@ -208,9 +205,8 @@ procedure doubly_linked_lists is
 		Sorting.Sort (Y);
 		pragma Assert (Sorting.Is_Sorted (Y));
 		pragma Assert (X = Y);
-	end Test_05;
-	pragma Debug (Test_05);
-	procedure Test_06 is
+	end;
+	declare -- copy-on-write
 		use type Lists.Cursor;
 		X : Lists.List;
 		Y : Lists.List;
@@ -242,9 +238,8 @@ procedure doubly_linked_lists is
 		pragma Assert (X.First = X_F, "should keep X");
 		pragma Assert (Y.First = Y_F, "should keep Y");
 		pragma Assert (X_F /= Y_F, "should be copied");
-	end Test_06;
-	pragma Debug (Test_06);
-	procedure Test_07 is
+	end;
+	declare -- Find
 		use type Lists.Cursor;
 		X : Lists.List;
 		Fst_A, Snd_A : Lists.Cursor;
@@ -258,10 +253,8 @@ procedure doubly_linked_lists is
 		pragma Assert (Lists.Find (X, 'a', Lists.Next (Fst_A)) = Snd_A);
 		pragma Assert (Lists.Reverse_Find (X, 'a') = Snd_A);
 		pragma Assert (Lists.Reverse_Find (X, 'a', Lists.Previous (Snd_A)) = Fst_A);
-	end Test_07;
-	pragma Debug (Test_07);
-begin
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Lists.List;
 		IX : ILists.List;
@@ -283,6 +276,6 @@ begin
 		Lists.List'Read (USIO.Stream (Buffer), X);
 		pragma Assert (X.Length = 1);
 		pragma Assert (Lists.Element (X.First) = 'b');
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end doubly_linked_lists;

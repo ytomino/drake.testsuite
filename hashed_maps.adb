@@ -25,7 +25,8 @@ procedure hashed_maps is
 		Hash => Hash,
 		Equivalent_Keys => "=");
 	pragma Unreferenced (LMaps);
-	procedure Test_01 is
+begin
+	declare -- Insert
 		X : Maps.Map;
 	begin
 		Maps.Insert (X, 'B', 15);
@@ -40,9 +41,8 @@ procedure hashed_maps is
 		pragma Assert (X.Element ('A') = 10);
 		pragma Assert (X.Element ('B') = 15);
 		pragma Assert (X.Element ('C') = 20);
-	end Test_01;
-	pragma Debug (Test_01);
-	procedure Test_02 is
+	end;
+	declare -- Iterate
 		use type Maps.Cursor;
 		X : aliased Maps.Map;
 	begin
@@ -76,10 +76,8 @@ procedure hashed_maps is
 			end loop;
 			pragma Assert (Check = CA'('C' => False, others => True));
 		end;
-	end Test_02;
-	pragma Debug (Test_02);
-begin
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Maps.Map;
 		IX : IMaps.Map;
@@ -102,6 +100,6 @@ begin
 		pragma Assert (X.Length = 1);
 		pragma Assert (Maps.Element (X.First) = 10);
 		pragma Assert (X.Element ('$') = 10);
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end hashed_maps;

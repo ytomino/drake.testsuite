@@ -22,7 +22,8 @@ procedure hashed_sets_1 is
 		Hash => Hash,
 		Equivalent_Elements => "=");
 	pragma Unreferenced (LSets);
-	procedure Test_01 is
+begin
+	declare -- Insert
 		X : Sets.Set;
 	begin
 		Sets.Insert (X, 2);
@@ -32,9 +33,8 @@ procedure hashed_sets_1 is
 		Sets.Insert (X, 1);
 		pragma Assert (X.Length = 3);
 		pragma Assert (Sets.Element (X.Find (3)) = 3);
-	end Test_01;
-	pragma Debug (Test_01);
-	procedure Test_02 is
+	end;
+	declare -- Include, Exclude
 		use type Sets.Cursor;
 		X : Sets.Set;
 	begin
@@ -70,9 +70,8 @@ procedure hashed_sets_1 is
 		end loop;
 		pragma Assert (X.Length = 0);
 		pragma Assert (X.First = Sets.No_Element);
-	end Test_02;
-	pragma Debug (Test_02);
-	procedure Test_03 is
+	end;
+	declare -- Iterate
 		use type Sets.Cursor;
 		X : aliased Sets.Set;
 		I : Sets.Cursor;
@@ -90,9 +89,8 @@ procedure hashed_sets_1 is
 			Sets.Next (I);
 		end loop;
 		pragma Assert (Check = CA'(1 | 3 | 5 | 7 | 9 => True, others => False));
-	end Test_03;
-	pragma Debug (Test_03);
-	procedure Test_04 is
+	end;
+	declare -- Equivalent_Sets
 		use type Sets.Set;
 		X, Y : Sets.Set;
 	begin
@@ -107,9 +105,8 @@ procedure hashed_sets_1 is
 		Sets.Insert (Y, 300);
 		pragma Assert (X = Y);
 		pragma Assert (Sets.Equivalent_Sets (X, Y));
-	end Test_04;
-	pragma Debug (Test_04);
-	procedure Test_05 is
+	end;
+	declare -- Overlap, Is_Subset
 		X, Y : Sets.Set;
 	begin
 		Sets.Insert (X, 100);
@@ -135,9 +132,8 @@ procedure hashed_sets_1 is
 		pragma Assert (not Y.Overlap (X));
 		pragma Assert (not X.Is_Subset (Y));
 		pragma Assert (not Y.Is_Subset (X));
-	end Test_05;
-	pragma Debug (Test_05);
-	procedure Test_06 is
+	end;
+	declare -- set-operators
 		type Integer_Array is array (Positive range <>) of Integer;
 		function To_Set is new Sets.Generic_Array_To_Set (Positive, Integer_Array);
 		use type Sets.Set;
@@ -161,10 +157,8 @@ procedure hashed_sets_1 is
 		Z := X;
 		Sets.Difference (Z, Y);
 		pragma Assert (Z = Sets.To_Set (2));
-	end Test_06;
-	pragma Debug (Test_06);
-begin
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Sets.Set;
 		IX : ISets.Set;
@@ -186,6 +180,6 @@ begin
 		Sets.Set'Read (USIO.Stream (Buffer), X);
 		pragma Assert (X.Length = 1);
 		pragma Assert (Sets.Element (X.First) = 10);
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end hashed_sets_1;

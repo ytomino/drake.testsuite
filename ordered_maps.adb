@@ -9,7 +9,8 @@ procedure ordered_maps is
 	package IMaps is new Ada.Containers.Indefinite_Ordered_Maps (Character, Integer);
 	package LMaps is new Ada.Containers.Limited_Ordered_Maps (Character, Integer);
 	pragma Unreferenced (LMaps);
-	procedure Test_01 is
+begin
+	declare -- Insert
 		X : Maps.Map;
 	begin
 		Maps.Insert (X, 'B', 15);
@@ -30,9 +31,8 @@ procedure ordered_maps is
 		pragma Assert (Maps.Key (X.Last) = 'C');
 		pragma Assert (Maps.Element (X.First) = 10);
 		pragma Assert (Maps.Element (X.Last) = 20);
-	end Test_01;
-	pragma Debug (Test_01);
-	procedure Test_02 is
+	end;
+	declare -- Iterate
 		use type Maps.Cursor;
 		X : aliased Maps.Map;
 		C : Character;
@@ -106,10 +106,8 @@ procedure ordered_maps is
 				Pos := Maps.Map_Iterator_Interfaces.Previous (Ite, Pos);
 			end loop;
 		end;
-	end Test_02;
-	pragma Debug (Test_02);
-begin
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Maps.Map;
 		IX : IMaps.Map;
@@ -132,6 +130,6 @@ begin
 		pragma Assert (X.Length = 1);
 		pragma Assert (Maps.Element (X.First) = 10);
 		pragma Assert (X.Element ('$') = 10);
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end ordered_maps;

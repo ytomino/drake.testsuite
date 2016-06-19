@@ -30,7 +30,8 @@ procedure vectors is
 		Positive,
 		Character);
 	pragma Unreferenced (LVectors);
-	procedure Test_03 is
+begin
+	declare -- Sorting
 		function To_Vector is new Vectors.Generic_Array_To_Vector (String);
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := To_Vector ("ABC");
@@ -47,9 +48,8 @@ procedure vectors is
 		Vectors_Sorting.Sort (Y);
 		Vectors_Sorting.Merge (X, Y);
 		pragma Assert (String (X.Constant_Reference.Element.all) = "AbcDFGHJKLmnSvxz");
-	end Test_03;
-	pragma Debug (Test_03);
-	procedure Test_04 is
+	end;
+	declare -- copy-on-write
 		use type Ada.Containers.Count_Type;
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := 'A' & 'B' & 'C';
@@ -69,9 +69,8 @@ procedure vectors is
 			Y.Constant_Reference (1).Element);
 		pragma Assert (X.Constant_Reference (1).Element /=
 			Z.Constant_Reference (1).Element);
-	end Test_04;
-	pragma Debug (Test_04);
-	procedure Test_05 is
+	end;
+	declare -- insert
 		use type Ada.Containers.Count_Type;
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := 'A' & 'B' & 'C' & 'D';
@@ -88,9 +87,8 @@ procedure vectors is
 		pragma Assert (X.Element (1) = 'A');
 		pragma Assert (X.Element (2) = 'Z');
 		pragma Assert (X.Element (3) = 'D');
-	end Test_05;
-	pragma Debug (Test_05);
-	procedure Test_06 is
+	end;
+	declare -- "&"
 		use type Ada.Containers.Count_Type;
 		use type IVectors.Vector;
 		X : aliased IVectors.Vector := 'A' & 'B' & 'C';
@@ -122,9 +120,8 @@ procedure vectors is
 		pragma Assert (X.Element (1) = 'A');
 		pragma Assert (X.Element (2) = 'Z');
 		pragma Assert (X.Element (3) = 'D');
-	end Test_06;
-	pragma Debug (Test_06);
-	procedure Test_08 is
+	end;
+	declare -- iterate
 		use Vectors;
 		X : aliased Vectors.Vector;
 	begin
@@ -178,10 +175,8 @@ procedure vectors is
 				C := Character'Pred (C);
 			end loop;
 		end;
-	end Test_08;
-	pragma Debug (Test_08);
-begin
-	Append_Self : declare
+	end;
+	declare -- Append (X, X)
 		use type Vectors.Element_Array;
 		X : Vectors.Vector;
 		IX : IVectors.Vector;
@@ -216,8 +211,8 @@ begin
 			pragma Assert (IX.Element (I) = X.Element (I));
 			null;
 		end loop;
-	end Append_Self;
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Vectors.Vector;
 		IX : IVectors.Vector;
@@ -239,6 +234,6 @@ begin
 		Vectors.Vector'Read (USIO.Stream (Buffer), X);
 		pragma Assert (X.Length = 1);
 		pragma Assert (X.Element (1) = 'b');
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end vectors;

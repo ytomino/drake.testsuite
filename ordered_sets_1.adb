@@ -11,7 +11,8 @@ procedure ordered_sets_1 is
 	package LSets is new Ada.Containers.Limited_Ordered_Sets (Integer);
 	pragma Unreferenced (LSets);
 	package Sets_Debug is new Sets.Debug;
-	procedure Test_01 is
+begin
+	declare -- Insert
 		X : Sets.Set;
 	begin
 		Sets.Insert (X, 2);
@@ -26,9 +27,8 @@ procedure ordered_sets_1 is
 		pragma Assert (X.Length = 3);
 		pragma Assert (Sets.Element (X.First) = 1);
 		pragma Assert (Sets.Element (X.Last) = 3);
-	end Test_01;
-	pragma Debug (Test_01);
-	procedure Test_02 is
+	end;
+	declare -- Include, Exclude
 		use type Sets.Cursor;
 		X : Sets.Set;
 	begin
@@ -68,9 +68,8 @@ procedure ordered_sets_1 is
 		pragma Assert (X.Length = 0);
 		pragma Assert (X.First = Sets.No_Element);
 		pragma Assert (X.Last = Sets.No_Element);
-	end Test_02;
-	pragma Debug (Test_02);
-	procedure Test_03 is
+	end;
+	declare -- Ceiling, Floor
 		use type Sets.Cursor;
 		X : Sets.Set;
 	begin
@@ -91,9 +90,8 @@ procedure ordered_sets_1 is
 		pragma Assert (Sets.Element (X.Floor (6)) = 5);
 		pragma Assert (Sets.Element (X.Floor (8)) = 7);
 		pragma Assert (Sets.Element (X.Floor (10)) = 9);
-	end Test_03;
-	pragma Debug (Test_03);
-	procedure Test_04 is
+	end;
+	declare -- Iterate
 		use type Sets.Cursor;
 		X : aliased Sets.Set;
 		I : Sets.Cursor;
@@ -118,9 +116,8 @@ procedure ordered_sets_1 is
 			Sets.Previous (I);
 			N := N - 2;
 		end loop;
-	end Test_04;
-	pragma Debug (Test_04);
-	procedure Test_05 is
+	end;
+	declare -- Equivalent_Sets
 		use type Sets.Set;
 		X, Y : Sets.Set;
 	begin
@@ -135,9 +132,8 @@ procedure ordered_sets_1 is
 		Sets.Insert (Y, 300);
 		pragma Assert (X = Y);
 		pragma Assert (Sets.Equivalent_Sets (X, Y));
-	end Test_05;
-	pragma Debug (Test_05);
-	procedure Test_06 is
+	end;
+	declare -- Overlap, Is_Subset
 		X, Y : Sets.Set;
 	begin
 		Sets.Insert (X, 100);
@@ -163,9 +159,8 @@ procedure ordered_sets_1 is
 		pragma Assert (not Y.Overlap (X));
 		pragma Assert (not X.Is_Subset (Y));
 		pragma Assert (not Y.Is_Subset (X));
-	end Test_06;
-	pragma Debug (Test_06);
-	procedure Test_07 is
+	end;
+	declare -- set-operators
 		type Integer_Array is array (Positive range <>) of Integer;
 		function To_Set is new Sets.Generic_Array_To_Set (Positive, Integer_Array);
 		use type Sets.Set;
@@ -189,10 +184,8 @@ procedure ordered_sets_1 is
 		Z := X;
 		Sets.Difference (Z, Y);
 		pragma Assert (Z = Sets.To_Set (2));
-	end Test_07;
-	pragma Debug (Test_07);
-begin
-	declare
+	end;
+	declare -- Insert and Delete with Dump
 		X : Sets.Set;
 	begin
 		for I in 1 .. 5 loop
@@ -224,7 +217,7 @@ begin
 		Sets_Debug.Dump (X, Message => Ada.Debug.Source_Location);
 		pragma Assert (X.Is_Empty);
 	end;
-	Stream_Test : declare
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : Sets.Set;
 		IX : ISets.Set;
@@ -246,6 +239,6 @@ begin
 		Sets.Set'Read (USIO.Stream (Buffer), X);
 		pragma Assert (X.Length = 1);
 		pragma Assert (Sets.Element (X.First) = 10);
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end ordered_sets_1;

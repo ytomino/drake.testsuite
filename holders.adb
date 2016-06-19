@@ -3,17 +3,16 @@ with Ada.Containers.Indefinite_Holders;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure holders is
 	package String_Holders is new Ada.Containers.Indefinite_Holders (String);
-	procedure Test_1 is
+begin
+	declare -- Replace_Element
 		X : aliased String_Holders.Holder := String_Holders.To_Holder ("123");
 	begin
 		pragma Assert (X.Constant_Reference.Element.all = "123");
 		String_Holders.Replace_Element (X, "ABCDEFG"); -- changing constraints
 		pragma Assert (X.Reference.Element.all = "ABCDEFG");
 		null;
-	end Test_1;
-	pragma Debug (Test_1);
-begin
-	Stream_Test : declare
+	end;
+	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
 		X : String_Holders.Holder;
 		Buffer : USIO.Buffer_Type;
@@ -34,6 +33,6 @@ begin
 		Ada.Streams.Set_Index (Ada.Streams.Seekable_Stream_Type'Class (USIO.Stream (Buffer).all), 1);
 		String_Holders.Holder'Read (USIO.Stream (Buffer), X);
 		pragma Assert (X.Element = "XYZ");
-	end Stream_Test;
+	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end holders;
