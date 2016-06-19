@@ -8,6 +8,7 @@ begin
 	raise Program_Error;
 exception
 	when E : Program_Error =>
+		pragma Unreferenced (E);
 		Ada.Debug.Put ("handled... and reraising...");
 		raise;
 end exception3;

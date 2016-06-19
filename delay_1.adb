@@ -4,6 +4,7 @@ with Ada.Real_Time;
 with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
 with System.Arith_64; -- why is __gnat_mulv64 required ???
+pragma Unreferenced (System.Arith_64);
 procedure delay_1 is
 	package Duration_IO is new Ada.Text_IO.Fixed_IO (Duration);
 	use Ada.Text_IO, Duration_IO;

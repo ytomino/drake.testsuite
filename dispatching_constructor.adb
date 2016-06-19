@@ -13,6 +13,7 @@ procedure dispatching_constructor is
 	end Derived;
 	package body Derived is
 		overriding function Create (Params : not null access Integer) return T is
+			pragma Unreferenced (Params);
 		begin
 			Derived_Creation_Count := Derived_Creation_Count + 1;
 			return (Root.T with null record);

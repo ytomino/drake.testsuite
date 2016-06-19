@@ -25,9 +25,11 @@ procedure vectors is
 		Character,
 		"=" => Custom_Eq);
 	package IVectors_Sorting is new IVectors.Generic_Sorting ("<" => Custom_Le);
+	pragma Unreferenced (IVectors_Sorting);
 	package LVectors is new Ada.Containers.Limited_Vectors (
 		Positive,
 		Character);
+	pragma Unreferenced (LVectors);
 	procedure Test_03 is
 		function To_Vector is new Vectors.Generic_Array_To_Vector (String);
 		use type Vectors.Vector;

@@ -6,11 +6,13 @@ procedure finalization is
 	overriding procedure Initialize (Object : in out C);
 	overriding procedure Finalize (Object : in out C);
 	overriding procedure Initialize (Object : in out C) is
+		pragma Unreferenced (Object);
 	begin
 		pragma Assert (C_Count = 0);
 		C_Count := C_Count + 1;
 	end Initialize;
 	overriding procedure Finalize (Object : in out C) is
+		pragma Unreferenced (Object);
 	begin
 		pragma Assert (C_Count = 1);
 		C_Count := C_Count - 1;
@@ -20,11 +22,13 @@ procedure finalization is
 	overriding procedure Initialize (Object : in out LC);
 	overriding procedure Finalize (Object : in out LC);
 	overriding procedure Initialize (Object : in out LC) is
+		pragma Unreferenced (Object);
 	begin
 		pragma Assert (LC_Count = 0);
 		LC_Count := LC_Count + 1;
 	end Initialize;
 	overriding procedure Finalize (Object : in out LC) is
+		pragma Unreferenced (Object);
 	begin
 		pragma Assert (LC_Count = 1);
 		LC_Count := LC_Count - 1;
@@ -32,7 +36,9 @@ procedure finalization is
 begin
 	declare
 		A : C;
+		pragma Unreferenced (A);
 		B : LC;
+		pragma Unreferenced (B);
 	begin
 		pragma Assert (C_Count = 1);
 		pragma Assert (LC_Count = 1);

@@ -9,6 +9,7 @@ procedure ordered_sets_1 is
 	package Sets is new Ada.Containers.Ordered_Sets (Integer);
 	package ISets is new Ada.Containers.Indefinite_Ordered_Sets (Integer);
 	package LSets is new Ada.Containers.Limited_Ordered_Sets (Integer);
+	pragma Unreferenced (LSets);
 	package Sets_Debug is new Sets.Debug;
 	procedure Test_01 is
 		X : Sets.Set;

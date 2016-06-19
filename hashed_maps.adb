@@ -24,6 +24,7 @@ procedure hashed_maps is
 		Integer,
 		Hash => Hash,
 		Equivalent_Keys => "=");
+	pragma Unreferenced (LMaps);
 	procedure Test_01 is
 		X : Maps.Map;
 	begin

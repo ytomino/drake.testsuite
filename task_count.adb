@@ -29,6 +29,7 @@ procedure task_count is
 		Callee.Bottleneck;
 	end Caller;
 	Callers : array (1 .. Caller_Count) of Caller;
+	pragma Unreferenced (Callers);
 begin
 	delay 0.1;
 	Callee.Start;

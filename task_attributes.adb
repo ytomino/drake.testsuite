@@ -12,6 +12,7 @@ procedure task_attributes is
 		Ada.Task_Identification.Task_Id);
 	package Attr is new Ada.Task_Attributes (Integer, 0);
 	procedure Process (Param : System.Address) is
+		pragma Unreferenced (Param);
 	begin
 		delay 0.1;
 		Flags (Attr.Value) := True;

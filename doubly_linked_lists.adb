@@ -8,6 +8,7 @@ procedure doubly_linked_lists is
 	package Lists is new Ada.Containers.Doubly_Linked_Lists (Character);
 	package ILists is new Ada.Containers.Indefinite_Doubly_Linked_Lists (Character);
 	package LLists is new Ada.Containers.Limited_Doubly_Linked_Lists (Character);
+	pragma Unreferenced (LLists);
 	procedure Test_01 is
 		X : Lists.List;
 	begin

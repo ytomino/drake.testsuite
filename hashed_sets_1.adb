@@ -21,6 +21,7 @@ procedure hashed_sets_1 is
 		Integer,
 		Hash => Hash,
 		Equivalent_Elements => "=");
+	pragma Unreferenced (LSets);
 	procedure Test_01 is
 		X : Sets.Set;
 	begin

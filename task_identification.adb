@@ -162,7 +162,7 @@ begin
 			begin
 				raise Program_Error;
 			end NAT;
-			A : Integer := Integer'Value ("###"); -- raise Constraint_Error
+			Dummy : Integer := Integer'Value ("###"); -- raise Constraint_Error
 		begin
 			raise Program_Error;
 		end;

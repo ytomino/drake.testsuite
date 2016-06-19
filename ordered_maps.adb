@@ -8,6 +8,7 @@ procedure ordered_maps is
 	package Maps is new Ada.Containers.Ordered_Maps (Character, Integer);
 	package IMaps is new Ada.Containers.Indefinite_Ordered_Maps (Character, Integer);
 	package LMaps is new Ada.Containers.Limited_Ordered_Maps (Character, Integer);
+	pragma Unreferenced (LMaps);
 	procedure Test_01 is
 		X : Maps.Map;
 	begin

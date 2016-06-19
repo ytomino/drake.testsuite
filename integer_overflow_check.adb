@@ -1,9 +1,9 @@
 -- { dg-do run }
 with Ada;
 with Interfaces;
+with System.Arith_64; -- why is __gnat_mulv64 required ???
+pragma Unreferenced (System.Arith_64);
 procedure integer_overflow_check is
-	Arithmetic_64 : constant Duration :=
-		Duration'Value ("1.0") / Duration'Value ("1.0"); -- link s-arit64
 	generic
 		type T is range <>;
 	procedure Generic_Check;

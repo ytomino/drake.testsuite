@@ -28,6 +28,7 @@ procedure task_cow is
 	end Display;
 	X, Y : Lists.List;
 	procedure Process (Param : System.Address) is
+		pragma Unreferenced (Param);
 	begin
 		for I in Character'('D') .. 'Z' loop
 			Lists.Append (Y, I); -- break sharing
