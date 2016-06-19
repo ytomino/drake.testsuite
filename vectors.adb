@@ -3,6 +3,7 @@ with Ada.Characters.ASCII.Handling;
 with Ada.Containers.Indefinite_Vectors;
 with Ada.Containers.Limited_Vectors;
 with Ada.Containers.Vectors;
+with Ada.Iterator_Interfaces;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure vectors is
 	function Custom_Eq (Left, Right : Character) return Boolean is
@@ -29,7 +30,6 @@ procedure vectors is
 	package LVectors is new Ada.Containers.Limited_Vectors (
 		Positive,
 		Character);
-	pragma Unreferenced (LVectors);
 begin
 	declare -- Sorting
 		function To_Vector is new Vectors.Generic_Array_To_Vector (String);
@@ -210,6 +210,72 @@ begin
 		for I in 1 .. 8 loop
 			pragma Assert (IX.Element (I) = X.Element (I));
 			null;
+		end loop;
+	end;
+	declare -- Iterate (invalid ranges)
+		generic
+			type T is tagged limited private;
+			with function Last (C : T) return Natural;
+			with package II is
+				new Ada.Iterator_Interfaces (Natural, Has_Element => <>);
+			with function Iterate (C : T'Class; First, Last : Natural)
+				return II.Reversible_Iterator'Class;
+		procedure Iterate_Invalid_Ranges (C : T);
+		procedure Iterate_Invalid_Ranges (C : T) is
+		begin
+			for I in C.Iterate (1, 0) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (1, 0) loop
+				raise Program_Error;
+			end loop;
+			for I in C.Iterate (Last (C) + 1, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (Last (C) + 1, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in C.Iterate (0, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (0, Last (C)) loop
+				raise Program_Error;
+			end loop;
+		end Iterate_Invalid_Ranges;
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				Vectors.Vector,
+				Vectors.Last,
+				Vectors.Vector_Iterator_Interfaces,
+				Vectors.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				IVectors.Vector,
+				IVectors.Last,
+				IVectors.Vector_Iterator_Interfaces,
+				IVectors.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				LVectors.Vector,
+				LVectors.Last,
+				LVectors.Vector_Iterator_Interfaces,
+				LVectors.Iterate);
+		C : Vectors.Vector;
+		IC : IVectors.Vector;
+		LC : LVectors.Vector;
+	begin
+		for Count in 0 .. 1 loop
+			IIR (C);
+			IIR (IC);
+			IIR (LC);
+			Vectors.Append (C, 'x');
+			IVectors.Append (IC, 'x');
+			declare
+				function New_X return Character renames 'x';
+				P : LVectors.Cursor;
+			begin
+				LVectors.Insert (LC, LVectors.No_Element, New_X'Access, P);
+			end;
 		end loop;
 	end;
 	declare -- streaming

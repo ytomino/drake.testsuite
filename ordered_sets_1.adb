@@ -3,13 +3,13 @@ with Ada.Containers.Indefinite_Ordered_Sets;
 with Ada.Containers.Limited_Ordered_Sets;
 with Ada.Containers.Ordered_Sets;
 with Ada.Containers.Ordered_Sets.Debug;
+with Ada.Iterator_Interfaces;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure ordered_sets_1 is
 	use type Ada.Containers.Count_Type;
 	package Sets is new Ada.Containers.Ordered_Sets (Integer);
 	package ISets is new Ada.Containers.Indefinite_Ordered_Sets (Integer);
 	package LSets is new Ada.Containers.Limited_Ordered_Sets (Integer);
-	pragma Unreferenced (LSets);
 	package Sets_Debug is new Sets.Debug;
 begin
 	declare -- Insert
@@ -216,6 +216,80 @@ begin
 		end loop;
 		Sets_Debug.Dump (X, Message => Ada.Debug.Source_Location);
 		pragma Assert (X.Is_Empty);
+	end;
+	declare -- Iterate (invalid ranges)
+		generic
+			type Cursor is private;
+			No_Element : Cursor;
+			type T is tagged limited private;
+			with function First (C : T) return Cursor;
+			with function Last (C : T) return Cursor;
+			with package II is
+				new Ada.Iterator_Interfaces (Cursor, Has_Element => <>);
+			with function Iterate (C : T'Class; First, Last : Cursor)
+				return II.Reversible_Iterator'Class;
+		procedure Iterate_Invalid_Ranges (C : T);
+		procedure Iterate_Invalid_Ranges (C : T) is
+		begin
+			for I in C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+		end Iterate_Invalid_Ranges;
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				Sets.Cursor,
+				Sets.No_Element,
+				Sets.Set,
+				Sets.First,
+				Sets.Last,
+				Sets.Set_Iterator_Interfaces,
+				Sets.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				ISets.Cursor,
+				ISets.No_Element,
+				ISets.Set,
+				ISets.First,
+				ISets.Last,
+				ISets.Set_Iterator_Interfaces,
+				ISets.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				LSets.Cursor,
+				LSets.No_Element,
+				LSets.Set,
+				LSets.First,
+				LSets.Last,
+				LSets.Set_Iterator_Interfaces,
+				LSets.Iterate);
+		C : Sets.Set;
+		IC : ISets.Set;
+		LC : LSets.Set;
+	begin
+		for Count in 0 .. 1 loop
+			IIR (C);
+			IIR (IC);
+			IIR (LC);
+			declare
+				function New_Element return Integer is
+				begin
+					return 123 + Count;
+				end New_Element;
+			begin
+				Sets.Insert (C, New_Element);
+				ISets.Insert (IC, New_Element);
+				LSets.Insert (LC, New_Element'Access);
+			end;
+		end loop;
 	end;
 	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;

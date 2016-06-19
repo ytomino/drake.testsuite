@@ -2,13 +2,13 @@
 with Ada.Containers.Indefinite_Ordered_Maps;
 with Ada.Containers.Limited_Ordered_Maps;
 with Ada.Containers.Ordered_Maps;
+with Ada.Iterator_Interfaces;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure ordered_maps is
 	use type Ada.Containers.Count_Type;
 	package Maps is new Ada.Containers.Ordered_Maps (Character, Integer);
 	package IMaps is new Ada.Containers.Indefinite_Ordered_Maps (Character, Integer);
 	package LMaps is new Ada.Containers.Limited_Ordered_Maps (Character, Integer);
-	pragma Unreferenced (LMaps);
 begin
 	declare -- Insert
 		X : Maps.Map;
@@ -106,6 +106,84 @@ begin
 				Pos := Maps.Map_Iterator_Interfaces.Previous (Ite, Pos);
 			end loop;
 		end;
+	end;
+	declare -- Iterate (invalid ranges)
+		generic
+			type Cursor is private;
+			No_Element : Cursor;
+			type T is tagged limited private;
+			with function First (C : T) return Cursor;
+			with function Last (C : T) return Cursor;
+			with package II is
+				new Ada.Iterator_Interfaces (Cursor, Has_Element => <>);
+			with function Iterate (C : T'Class; First, Last : Cursor)
+				return II.Reversible_Iterator'Class;
+		procedure Iterate_Invalid_Ranges (C : T);
+		procedure Iterate_Invalid_Ranges (C : T) is
+		begin
+			for I in C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+		end Iterate_Invalid_Ranges;
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				Maps.Cursor,
+				Maps.No_Element,
+				Maps.Map,
+				Maps.First,
+				Maps.Last,
+				Maps.Map_Iterator_Interfaces,
+				Maps.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				IMaps.Cursor,
+				IMaps.No_Element,
+				IMaps.Map,
+				IMaps.First,
+				IMaps.Last,
+				IMaps.Map_Iterator_Interfaces,
+				IMaps.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				LMaps.Cursor,
+				LMaps.No_Element,
+				LMaps.Map,
+				LMaps.First,
+				LMaps.Last,
+				LMaps.Map_Iterator_Interfaces,
+				LMaps.Iterate);
+		C : Maps.Map;
+		IC : IMaps.Map;
+		LC : LMaps.Map;
+	begin
+		for Count in 0 .. 1 loop
+			IIR (C);
+			IIR (IC);
+			IIR (LC);
+			declare
+				function New_Key return Character is
+				begin
+					return Character'Val (Character'Pos ('x') + Count);
+				end New_Key;
+				function New_Element return Integer is
+				begin
+					return 123 + Count;
+				end New_Element;
+			begin
+				Maps.Insert (C, New_Key, New_Element);
+				IMaps.Insert (IC, New_Key, New_Element);
+				LMaps.Insert (LC, New_Key'Access, New_Element'Access);
+			end;
+		end loop;
 	end;
 	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;

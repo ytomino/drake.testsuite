@@ -2,13 +2,13 @@
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Indefinite_Doubly_Linked_Lists;
 with Ada.Containers.Limited_Doubly_Linked_Lists;
+with Ada.Iterator_Interfaces;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure doubly_linked_lists is
 	use type Ada.Containers.Count_Type;
 	package Lists is new Ada.Containers.Doubly_Linked_Lists (Character);
 	package ILists is new Ada.Containers.Indefinite_Doubly_Linked_Lists (Character);
 	package LLists is new Ada.Containers.Limited_Doubly_Linked_Lists (Character);
-	pragma Unreferenced (LLists);
 begin
 	declare -- Append
 		X : Lists.List;
@@ -253,6 +253,78 @@ begin
 		pragma Assert (Lists.Find (X, 'a', Lists.Next (Fst_A)) = Snd_A);
 		pragma Assert (Lists.Reverse_Find (X, 'a') = Snd_A);
 		pragma Assert (Lists.Reverse_Find (X, 'a', Lists.Previous (Snd_A)) = Fst_A);
+	end;
+	declare -- Iterate (invalid ranges)
+		generic
+			type Cursor is private;
+			No_Element : Cursor;
+			type T is tagged limited private;
+			with function First (C : T) return Cursor;
+			with function Last (C : T) return Cursor;
+			with package II is
+				new Ada.Iterator_Interfaces (Cursor, Has_Element => <>);
+			with function Iterate (C : T'Class; First, Last : Cursor)
+				return II.Reversible_Iterator'Class;
+		procedure Iterate_Invalid_Ranges (C : T);
+		procedure Iterate_Invalid_Ranges (C : T) is
+		begin
+			for I in C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (First (C), No_Element) loop
+				raise Program_Error;
+			end loop;
+			for I in C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+			for I in reverse C.Iterate (No_Element, Last (C)) loop
+				raise Program_Error;
+			end loop;
+		end Iterate_Invalid_Ranges;
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				Lists.Cursor,
+				Lists.No_Element,
+				Lists.List,
+				Lists.First,
+				Lists.Last,
+				Lists.List_Iterator_Interfaces,
+				Lists.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				ILists.Cursor,
+				ILists.No_Element,
+				ILists.List,
+				ILists.First,
+				ILists.Last,
+				ILists.List_Iterator_Interfaces,
+				ILists.Iterate);
+		procedure IIR is
+			new Iterate_Invalid_Ranges (
+				LLists.Cursor,
+				LLists.No_Element,
+				LLists.List,
+				LLists.First,
+				LLists.Last,
+				LLists.List_Iterator_Interfaces,
+				LLists.Iterate);
+		C : Lists.List;
+		IC : ILists.List;
+		LC : LLists.List;
+	begin
+		for Count in 0 .. 1 loop
+			IIR (C);
+			IIR (IC);
+			IIR (LC);
+			Lists.Append (C, 'x');
+			ILists.Append (IC, 'x');
+			declare
+				function New_X return Character renames 'x';
+				P : LLists.Cursor;
+			begin
+				LLists.Insert (LC, LLists.No_Element, New_X'Access, P);
+			end;
+		end loop;
 	end;
 	declare -- streaming
 		package USIO renames Ada.Streams.Unbounded_Storage_IO;
