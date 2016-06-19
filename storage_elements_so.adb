@@ -1,7 +1,7 @@
 -- { dg-do run }
 with Ada;
 with System.Storage_Elements;
-procedure storage_elements is
+procedure storage_elements_so is
 	use type System.Address;
 	use type System.Storage_Elements.Storage_Offset;
 	X : System.Address := System'To_Address (100);
@@ -15,4 +15,4 @@ begin
 	pragma Assert (X - System'To_Address (90) = System.Storage_Elements.Storage_Offset'(10));
 	pragma Debug (Ada.Debug.Put ("OK"));
 	null;
-end storage_elements;
+end storage_elements_so;
