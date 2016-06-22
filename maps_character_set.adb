@@ -1,6 +1,4 @@
 -- { dg-do run }
-with Ada.Integer_Text_IO;
-with Ada.Wide_Wide_Text_IO;
 with Ada.Strings.Maps.Constants;
 with Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 procedure maps_character_set is
@@ -18,7 +16,6 @@ begin
 	pragma Assert (not Ada.Strings.Maps.Is_In (Character'('/'), Ada.Strings.Maps.Constants.Decimal_Digit_Set));
 	pragma Assert (Ada.Strings.Maps.Is_In (Character'('5'), Ada.Strings.Maps.Constants.Decimal_Digit_Set));
 	pragma Assert (not Ada.Strings.Maps.Is_In (Character'(':'), Ada.Strings.Maps.Constants.Decimal_Digit_Set));
-	Ada.Wide_Wide_Text_IO.Put_Line (Ada.Strings.Wide_Wide_Maps.To_Sequence (Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Decimal_Number_Set));
 	pragma Assert (Ada.Strings.Wide_Wide_Maps.Is_In ('5', Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants.Decimal_Number_Set));
 	for I in Wide_Wide_Character'First .. Wide_Wide_Character'Val (16#110000#) loop
 		declare
@@ -40,8 +37,7 @@ begin
 						G := G + 1;
 					end if;
 					if G /= 1 then
-						Ada.Integer_Text_IO.Put (Wide_Wide_Character'Pos (I), Base => 16);
-						Ada.Wide_Wide_Text_IO.New_Line;
+						Ada.Debug.Put (Wide_Wide_Character'Image (I));
 						pragma Assert (False);
 					end if;
 				end;
@@ -65,8 +61,7 @@ begin
 				C := C + 1;
 			end if;
 			if C /= 1 then
-				Ada.Integer_Text_IO.Put (Wide_Wide_Character'Pos (I), Base => 16);
-				Ada.Wide_Wide_Text_IO.New_Line;
+				Ada.Debug.Put (Wide_Wide_Character'Image (I));
 				pragma Assert (False);
 			end if;
 		end;

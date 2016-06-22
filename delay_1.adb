@@ -1,13 +1,10 @@
 -- { dg-do run }
 with Ada.Execution_Time;
 with Ada.Real_Time;
-with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
 with System.Arith_64; -- why is __gnat_mulv64 required ???
 pragma Unreferenced (System.Arith_64);
 procedure delay_1 is
-	package Duration_IO is new Ada.Text_IO.Fixed_IO (Duration);
-	use Ada.Text_IO, Duration_IO;
 	use type Ada.Execution_Time.CPU_Time;
 	use type Ada.Real_Time.Time;
 	use type Ada.Real_Time.Time_Span;
@@ -19,10 +16,15 @@ begin
 	delay 1.0;
 	Now_RT := Ada.Real_Time.Clock;
 	Now_CT := Ada.Execution_Time.Clock;
-	Put ("Real Time: "); Put (Ada.Real_Time.To_Duration (Now_RT - First_RT)); New_Line;
-	Put ("CPU Time:  "); PUt (Ada.Real_Time.To_Duration (Now_CT - First_CT)); New_Line;
-	pragma Assert (Ada.Real_Time.To_Duration (Now_RT - First_RT) >= 1.0);
-	pragma Assert (Ada.Real_Time.To_Duration (Now_CT - First_CT) < 0.5);
+	declare
+		RD : constant Duration := Ada.Real_Time.To_Duration (Now_RT - First_RT);
+		CD : constant Duration := Ada.Real_Time.To_Duration (Now_CT - First_CT);
+	begin
+		Ada.Debug.Put ("Real Time:" & Duration'Image (RD));
+		Ada.Debug.Put ("CPU Time: " & Duration'Image (CD));
+		pragma Assert (RD >= 1.0);
+		pragma Assert (CD < 0.5);
+	end;
 	-- Time_Span
 	pragma Assert (Ada.Real_Time.To_Time_Span (1.0) + Ada.Real_Time.To_Time_Span (2.0) = Ada.Real_Time.To_Time_Span (3.0));
 	pragma Assert (Ada.Real_Time.To_Time_Span (3.0) - Ada.Real_Time.To_Time_Span (2.0) = Ada.Real_Time.To_Time_Span (1.0));

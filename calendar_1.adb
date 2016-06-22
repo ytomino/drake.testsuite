@@ -1,18 +1,19 @@
 -- { dg-do run }
 with Ada.Calendar.Formatting;
 with Ada.Calendar.Time_Zones;
-with Ada.Integer_Text_IO;
-with Ada.Text_IO;
+with Ada.Formatting;
 with Ada.Unchecked_Conversion;
 procedure calendar_1 is
 	type Integer_Time is mod 2 ** Duration'Size;
 	pragma Warnings (Off, "representation of Time values may change between GNAT versions");
 	function To_Integer is new Ada.Unchecked_Conversion (Ada.Calendar.Time, Integer_Time);
 	pragma Warnings (On, "representation of Time values may change between GNAT versions");
-	package Integer_Time_IO is new Ada.Text_IO.Modular_IO (Integer_Time);
-	package Duration_IO is new Ada.Text_IO.Fixed_IO (Duration);
-	package Time_Offset_IO is new Ada.Text_IO.Integer_IO (Ada.Calendar.Time_Zones.Time_Offset);
-	use Ada.Text_IO, Ada.Integer_Text_IO, Integer_Time_IO, Duration_IO, Time_Offset_IO;
+	function Image_4 is
+		new Ada.Formatting.Integer_Image (Integer,
+			Signs => Ada.Formatting.Triming_Sign_Marks, Width => 4);
+	function Image_2 is
+		new Ada.Formatting.Integer_Image (Integer,
+			Signs => Ada.Formatting.Triming_Sign_Marks, Width => 2);
 	use type Ada.Calendar.Time;
 	use type Ada.Calendar.Time_Zones.Time_Offset;
 	Now : Ada.Calendar.Time := Ada.Calendar.Clock;
@@ -28,44 +29,53 @@ procedure calendar_1 is
 	Day_Name : Ada.Calendar.Formatting.Day_Name;
 	Remaked : Ada.Calendar.Time;
 begin
-	Put (To_Integer (Now), Base => 16); New_Line;
+	Ada.Debug.Put (Integer_Time'Image (To_Integer (Now)));
 	Ada.Calendar.Split (Now, Year, Month, Day, Seconds);
 	Ada.Calendar.Formatting.Split (Seconds, H, M, S, SS);
-	Output_GM : begin
-		Put ("GM ");
-		Put (Year, Width => 4); Put ('-'); Put (Month, Width => 2); Put ('-'); Put (Day, Width => 2); Put (' ');
-		Put (Seconds, Fore => 1); New_Line;
-	end Output_GM;
-	Output_GM_Full : begin
-		Put ("GM ");
-		Put (Year, Width => 4); Put ('-'); Put (Month, Width => 2); Put ('-'); Put (Day, Width => 2); Put (' ');
-		Put (H, Width => 2); Put (':'); Put (M, Width => 2); Put (':'); Put (S, Width => 2); Put (' ');
-		Put (SS, Fore => 1); New_Line;
-	end Output_GM_Full;
+	Ada.Debug.Put (
+		"GM "
+		& Image_4 (Year) & '-'
+		& Image_2 (Month) & '-'
+		& Image_2 (Day)
+		& Duration'Image (Seconds));
+	Ada.Debug.Put (
+		"GM "
+		& Image_4 (Year) & '-'
+		& Image_2 (Month) & '-'
+		& Image_2 (Day) & ' '
+		& Image_2 (H) & ':'
+		& Image_2 (M) & ':'
+		& Image_2 (S)
+		& Duration'Image (SS));
 	pragma Assert (Ada.Calendar.Seconds (Now) = Seconds);
 	Remaked := Ada.Calendar.Time_Of (Year, Month, Day, Seconds);
 	pragma Assert (Remaked = Now);
-	PUt ("TZ = "); Put (Ada.Calendar.Time_Zones.UTC_Time_Offset, Width => 1); New_Line;
-	Ada.Debug.Put (Ada.Calendar.Formatting.Image (Ada.Calendar.Time_Zones.UTC_Time_Offset));
+	Ada.Debug.Put (
+		"TZ ="
+		& Ada.Calendar.Time_Zones.Time_Offset'Image (
+			Ada.Calendar.Time_Zones.UTC_Time_Offset));
 	pragma Assert (Ada.Calendar.Formatting.Value (
 		Ada.Calendar.Formatting.Image (Ada.Calendar.Time_Zones.UTC_Time_Offset)) =
 		Ada.Calendar.Time_Zones.UTC_Time_Offset);
 	-- Time_Offset = 540 in Japan
 	Ada.Calendar.Formatting.Split (Now, Year, Month, Day, H, M, S, SS, LS,
 		Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset);
-	Output_LT_Full : begin
-		Put ("LT ");
-		Put (Year, Width => 4); Put ('-'); Put (Month, Width => 2); Put ('-'); Put (Day, Width => 2); Put (' ');
-		Put (H, Width => 2); Put (':'); Put (M, Width => 2); Put (':'); Put (S, Width => 2); Put (' ');
-		Put (SS, Fore => 1); New_Line;
-	end Output_LT_Full;
+	Ada.Debug.Put (
+		"LT "
+		& Image_4 (Year) & '-'
+		& Image_2 (Month) & '-'
+		& Image_2 (Day) & ' '
+		& Image_2 (H) & ':'
+		& Image_2 (M) & ':'
+		& Image_2 (S)
+		& Duration'Image (SS));
 	Remaked := Ada.Calendar.Formatting.Time_Of (Year, Month, Day, H, M, S, SS, LS,
 		Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset);
 	pragma Assert (Remaked = Now);
 	Day_Name := Ada.Calendar.Formatting.Day_of_Week (
 		Now,
 		Time_Zone => Ada.Calendar.Time_Zones.UTC_Time_Offset);
-	Put (Ada.Calendar.Formatting.Day_Name'Image (Day_Name)); New_Line;
+	Ada.Debug.Put (Ada.Calendar.Formatting.Day_Name'Image (Day_Name));
 	declare
 		Img : String := Ada.Calendar.Formatting.Image (Now, Include_Time_Fraction => True);
 	begin
