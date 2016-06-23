@@ -1,4 +1,5 @@
 -- { dg-do run }
+-- { dg-final scan-file-not "\bsystem\.tasks\b" "b~protected_rw.ads" }
 with Ada;
 procedure protected_rw is
 	protected RW is

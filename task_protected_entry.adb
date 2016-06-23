@@ -1,6 +1,6 @@
 -- { dg-do run }
 with Ada.Task_Identification;
-procedure protected_entry is
+procedure task_protected_entry is
 	use type Ada.Task_Identification.Task_Id;
 begin
 	-- entries only
@@ -68,4 +68,4 @@ begin
 		CS2.Leave;
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
-end protected_entry;
+end task_protected_entry;

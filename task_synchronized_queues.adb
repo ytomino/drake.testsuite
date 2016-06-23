@@ -2,7 +2,7 @@
 with Ada.Containers.Synchronized_Queue_Interfaces;
 with Ada.Containers.Unbounded_Priority_Queues;
 with Ada.Containers.Unbounded_Synchronized_Queues;
-procedure synchronized_queues is
+procedure task_synchronized_queues is
 	package Integer_Queue_Interfaces is
 		new Ada.Containers.Synchronized_Queue_Interfaces (Character);
 	procedure Test (
@@ -49,4 +49,4 @@ begin
 		Test (X, "ABC", "CBA");
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
-end synchronized_queues;
+end task_synchronized_queues;
