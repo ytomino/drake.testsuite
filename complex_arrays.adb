@@ -48,7 +48,7 @@ procedure complex_arrays is
 		-- primitives of complex
 		pragma Assert (abs (Complex'(2.0 + 3.0 * i) * Complex'(4.0 - 5.0 * i) - Complex'(23.0 + 2.0 * i)) < 1.0e-5);
 		pragma Assert (abs (Complex'(23.0 + 2.0 * i) / Complex'(2.0 + 3.0 * i) - Complex'(4.0 - 5.0 * i)) < 1.0e-5);
-		pragma Assert (Argument (1.0 + i) = Ada.Numerics.Pi / 4.0);
+		pragma Assert (abs (Argument (1.0 + i) - Ada.Numerics.Pi / 4.0) < 1.0e-5);
 		pragma Assert (abs (1.0 + i) + 0.0 * i = Sqrt (2.0 + 0.0 * i));
 		pragma Assert (Complex'(Conjugate (1.0 + i)) = 1.0 - i);
 		pragma Assert (abs (

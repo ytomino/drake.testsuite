@@ -25,9 +25,9 @@ procedure real_arrays is
 		pragma Assert (abs (Sin (Ada.Numerics.Pi) - 0.0) < 1.0e-5);
 		pragma Assert (abs (Sin (2.0 * Ada.Numerics.Pi) - 0.0) < 1.0e-5);
 		pragma Assert (Arctan (0.0, 1.0) = 0.0);
-		pragma Assert (Arctan (1.0, 0.0) = Ada.Numerics.Pi / 2.0);
+		pragma Assert (abs (Arctan (1.0, 0.0) - Ada.Numerics.Pi / 2.0) < 1.0e-6);
 		pragma Assert (abs (Arctan (0.0, -1.0) - Ada.Numerics.Pi) < 1.0e-6); -- precision problem?
-		pragma Assert (Arctan (-1.0, 0.0) = - Ada.Numerics.Pi / 2.0);
+		pragma Assert (abs (Arctan (-1.0, 0.0) + Ada.Numerics.Pi / 2.0) < 1.0e-6);
 		pragma Assert (10.0 ** 2.0 = 100.0);
 		pragma Assert (2.0 ** 3.0 = 8.0);
 		-- arrays
