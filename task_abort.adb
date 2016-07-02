@@ -5,8 +5,9 @@ with System.Tasks;
 procedure task_abort is
 	use type Ada.Calendar.Time;
 begin
-	Ada.Debug.Put ("**** break delay ****");
+	-- break delay
 	declare
+		T2_State : Positive := 1;
 		task T2;
 		task body T2 is
 		begin
@@ -14,52 +15,63 @@ begin
 			for I in 1 .. 500 loop
 				Ada.Dispatching.Yield;
 			end loop;
-			Ada.Debug.Put ("before wait in task");
+			-- before wait in task
 			delay until Ada.Calendar.Clock + 999.9;
-			Ada.Debug.Put ("after wait in task");
+			T2_State := 2; -- after wait in task
 			raise Program_Error; -- it does not come here
 		end T2;
 	begin
-		Ada.Debug.Put ("before abort");
+		-- before abort
 		abort T2;
-		Ada.Debug.Put ("after abort");
+		-- after abort
+		pragma Assert (T2_State = 1);
 	end;
-	Ada.Debug.Put ("**** break a task having a child task ****");
+	-- break a task having a child task
 	declare
+		T3_State : Positive := 1;
+		T3_Child_State : Positive := 1;
 		task T3;
 		task body T3 is
 			task T3_Child is
 			end T3_Child;
 			task body T3_Child is
 			begin
-				Ada.Debug.Put ("before wait in nested task");
+				T3_Child_State := 2; -- before wait in nested task
 				delay 999.9;
-				Ada.Debug.Put ("after wait in nested task");
+				T3_Child_State := 3; -- after wait in nested task
 				raise Program_Error; -- it does not come here
 			exception
 				when Standard'Abort_Signal =>
 					System.Tasks.When_Abort_Signal;
-					Ada.Debug.Put ("aborted in nested task");
+					T3_Child_State := 4; -- aborted in nested task
 					raise;
 			end T3_Child;
 		begin
-			Ada.Debug.Put ("before wait in task");
+			T3_State := 2; -- before wait in task
 			delay 999.9;
-			Ada.Debug.Put ("after wait in task");
+			T3_State := 3; -- after wait in task
 			raise Program_Error; -- it does not come here
 		exception
 			when Standard'Abort_Signal =>
 				System.Tasks.When_Abort_Signal;
-				Ada.Debug.Put ("aborted in task");
+				T3_State := 4; -- aborted in task
 				raise;
 		end T3;
 	begin
-		Ada.Debug.Put ("before abort");
+		delay 0.1;
+		-- before abort
+		pragma Assert (T3_State = 2);
+		pragma Assert (T3_Child_State = 2);
 		abort T3;
-		Ada.Debug.Put ("after abort");
+		delay 0.1;
+		-- after abort
+		pragma Assert (T3_State = 4);
+		pragma Assert (T3_Child_State = 4);
 	end;
-	Ada.Debug.Put ("**** break a task waiting an other tasks ****");
+	-- break a task waiting an other tasks
 	declare
+		T4_State : Positive := 1;
+		T4_Child_State : Positive := 1;
 		task T4;
 		task body T4 is
 		begin
@@ -68,33 +80,39 @@ begin
 				end T4_Child;
 				task body T4_Child is
 				begin
-					Ada.Debug.Put ("before wait in nested task");
+					T4_Child_State := 2; -- before wait in nested task
 					delay 999.9;
-					Ada.Debug.Put ("after wait in nested task");
+					T4_Child_State := 3; -- after wait in nested task
 					raise Program_Error; -- it does not come here
 				exception
 					when Standard'Abort_Signal =>
 						System.Tasks.When_Abort_Signal;
-						Ada.Debug.Put ("aborted in nested task");
+						T4_Child_State := 4; -- aborted in nested task
 						raise;
 				end T4_Child;
 			begin
-				Ada.Debug.Put ("before wait in task");
+				T4_State := 2; -- before wait in task
 			end; -- wait T4_Child in Leave_Master called from here
-			Ada.Debug.Put ("after wait in task");
+			T4_State := 3; -- after wait in task
 			delay 0.0; -- abort checking
+			T4_State := 4;
 			raise Program_Error; -- it does not come here
 		exception
 			when Standard'Abort_Signal =>
 				System.Tasks.When_Abort_Signal;
-				Ada.Debug.Put ("aborted in task");
+				T4_State := 5; -- aborted in task
 				raise;
 		end T4;
 	begin
 		delay 0.1; -- wait until T4 has waited T4_Child
-		Ada.Debug.Put ("before abort");
+		-- before abort
+		pragma Assert (T4_State = 2);
+		pragma Assert (T4_Child_State = 2);
 		abort T4;
-		Ada.Debug.Put ("after abort");
+		delay 0.1;
+		-- after abort
+		pragma Assert (T4_State = 5);
+		pragma Assert (T4_Child_State = 4);
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end task_abort;
