@@ -1,6 +1,6 @@
 -- { dg-do run }
 with Ada.Calendar;
-with System.Native_Tasks.Yield;
+with Ada.Dispatching;
 with System.Tasks;
 procedure task_abort is
 	use type Ada.Calendar.Time;
@@ -12,7 +12,7 @@ begin
 		begin
 			-- force switching to environment task
 			for I in 1 .. 500 loop
-				System.Native_Tasks.Yield;
+				Ada.Dispatching.Yield;
 			end loop;
 			Ada.Debug.Put ("before wait in task");
 			delay until Ada.Calendar.Clock + 999.9;
