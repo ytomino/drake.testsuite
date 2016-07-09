@@ -6,6 +6,7 @@ with Ada.Containers.Vectors;
 with Ada.Iterator_Interfaces;
 with Ada.Streams.Unbounded_Storage_IO;
 procedure vectors is
+	use type Ada.Containers.Count_Type;
 	function Custom_Eq (Left, Right : Character) return Boolean is
 	begin
 		return Ada.Characters.ASCII.Handling.To_Upper (Left) =
@@ -50,7 +51,6 @@ begin
 		pragma Assert (String (X.Constant_Reference.Element.all) = "AbcDFGHJKLmnSvxz");
 	end;
 	declare -- copy-on-write
-		use type Ada.Containers.Count_Type;
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := 'A' & 'B' & 'C';
 		Y : aliased Vectors.Vector;
@@ -71,7 +71,6 @@ begin
 			Z.Constant_Reference (1).Element);
 	end;
 	declare -- insert
-		use type Ada.Containers.Count_Type;
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := 'A' & 'B' & 'C' & 'D';
 		Position : Vectors.Cursor;
@@ -89,7 +88,6 @@ begin
 		pragma Assert (X.Element (3) = 'D');
 	end;
 	declare -- "&"
-		use type Ada.Containers.Count_Type;
 		use type IVectors.Vector;
 		X : aliased IVectors.Vector := 'A' & 'B' & 'C';
 		Y : aliased IVectors.Vector;

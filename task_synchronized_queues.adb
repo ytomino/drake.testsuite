@@ -3,6 +3,7 @@ with Ada.Containers.Synchronized_Queue_Interfaces;
 with Ada.Containers.Unbounded_Priority_Queues;
 with Ada.Containers.Unbounded_Synchronized_Queues;
 procedure task_synchronized_queues is
+	use type Ada.Containers.Count_Type;
 	package Integer_Queue_Interfaces is
 		new Ada.Containers.Synchronized_Queue_Interfaces (Character);
 	procedure Test (

@@ -8,7 +8,7 @@ procedure task_cow is
 		type SA is access String;
 		for SA'Storage_Size use 50; -- test System.Pool_Size
 		procedure Free is new Ada.Unchecked_Deallocation (String, SA);
-		Pic : SA := new String (1 .. C.Length);
+		Pic : SA := new String (1 .. Integer (C.Length));
 		Index : Positive := Pic'First;
 		Local_Error : exception;
 		Z : Lists.List := C; -- test controlled type in task
