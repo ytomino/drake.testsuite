@@ -17,16 +17,21 @@ procedure tags_1 is
 	type LDI is new L and LI with null record;
 begin
 	pragma Assert (Ada.Tags.Expanded_Name (LDI'Tag) = "TAGS_1.LDI");
+	pragma Assert (Ada.Tags.Expanded_Name (LI'Tag) = "TAGS_1.LI");
 	Ada.Debug.Put (Ada.Tags.External_Tag (LDI'Tag));
+	Ada.Debug.Put (Ada.Tags.External_Tag (LI'Tag));
 	pragma Assert (Ada.Tags.Parent_Tag (T'Tag) = Ada.Tags.No_Tag);
 	pragma Assert (Ada.Tags.Parent_Tag (D'Tag) = T'Tag);
 	pragma Assert (Ada.Tags.Parent_Tag (LD'Tag) = L'Tag);
 	pragma Assert (Ada.Tags.Parent_Tag (LDI'Tag) = L'Tag);
+	pragma Assert (Ada.Tags.Parent_Tag (LI'Tag) = Ada.Tags.No_Tag);
 	pragma Assert (Ada.Tags.Interface_Ancestor_Tags (D'Tag)'Length = 0);
 	pragma Assert (Ada.Tags.Interface_Ancestor_Tags (DI'Tag) = (1 => I'Tag));
+	pragma Assert (Ada.Tags.Interface_Ancestor_Tags (LI'Tag)'Length = 0);
 	pragma Assert (Ada.Tags.Is_Descendant_At_Same_Level (D'Tag, T'Tag));
 	pragma Assert (Ada.Tags.Is_Descendant_At_Same_Level (D'Tag, D'Tag));
 	pragma Assert (Ada.Tags.Is_Descendant_At_Same_Level (DI'Tag, I'Tag));
+	pragma Assert (not Ada.Tags.Is_Descendant_At_Same_Level (LI'Tag, I'Tag));
 	pragma Assert (not Ada.Tags.Is_Abstract (T'Tag));
 	pragma Assert (Ada.Tags.Is_Abstract (I'Tag));
 	declare
