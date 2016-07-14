@@ -19,7 +19,7 @@ begin
 			-- before wait in task
 			delay until Ada.Calendar.Clock + 999.9;
 			T2_State := 2; -- after wait in task
-			raise Program_Error; -- it does not come here
+			raise Program_Error; -- unreachable
 		end T2;
 	begin
 		-- before abort
@@ -40,7 +40,7 @@ begin
 				T3_Child_State := 2; -- before wait in nested task
 				delay 999.9;
 				T3_Child_State := 3; -- after wait in nested task
-				raise Program_Error; -- it does not come here
+				raise Program_Error; -- unreachable
 			exception
 				when Standard'Abort_Signal =>
 					System.Tasks.When_Abort_Signal;
@@ -51,7 +51,7 @@ begin
 			T3_State := 2; -- before wait in task
 			delay 999.9;
 			T3_State := 3; -- after wait in task
-			raise Program_Error; -- it does not come here
+			raise Program_Error; -- unreachable
 		exception
 			when Standard'Abort_Signal =>
 				System.Tasks.When_Abort_Signal;
@@ -84,7 +84,7 @@ begin
 					T4_Child_State := 2; -- before wait in nested task
 					delay 999.9;
 					T4_Child_State := 3; -- after wait in nested task
-					raise Program_Error; -- it does not come here
+					raise Program_Error; -- unreachable
 				exception
 					when Standard'Abort_Signal =>
 						System.Tasks.When_Abort_Signal;
@@ -97,7 +97,7 @@ begin
 			T4_State := 3; -- after wait in task
 			delay 0.0; -- abort checking
 			T4_State := 4;
-			raise Program_Error; -- it does not come here
+			raise Program_Error; -- unreachable
 		exception
 			when Standard'Abort_Signal =>
 				System.Tasks.When_Abort_Signal;
@@ -141,7 +141,7 @@ begin
 				begin
 					null;
 				end;
-				pragma Assert (False); -- it does not come here
+				pragma Assert (False); -- unreachable
 			exception
 				when Program_Error => -- hides Some_Error
 					T5_State := 2;
@@ -155,7 +155,7 @@ begin
 					T5_State := 3;
 					delay 999.9;
 					T5_State := 4;
-					raise Program_Error; -- it does not come here
+					raise Program_Error; -- unreachable
 				end;
 			exception
 				when Standard'Abort_Signal =>

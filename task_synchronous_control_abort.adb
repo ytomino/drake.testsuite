@@ -13,7 +13,7 @@ begin
 			T1_State := 2;
 			Ada.Synchronous_Task_Control.Suspend_Until_True (ev);
 			T1_State := 3;
-			raise Program_Error; -- it does not come here
+			raise Program_Error; -- unreachable
 		end T1;
 	begin
 		delay 0.1;
@@ -35,7 +35,7 @@ begin
 				ev,
 				Ada.Real_Time.To_Time_Span (1.0));
 			T2_State := 3;
-			raise Program_Error; -- it does not come here
+			raise Program_Error; -- unreachable
 		end T2;
 	begin
 		delay 0.1;
