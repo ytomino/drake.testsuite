@@ -1,5 +1,5 @@
 -- { dg-do run }
-with Ada.Text_IO;
+with Ada;
 procedure fixed_operators is
 begin
 	-- ordinary fixed (power of 2)
@@ -8,8 +8,8 @@ begin
 		pragma Assert (T4'Aft = 2);
 	begin
 		-- ordinary fixed type does not have 'Scale attribute.
-		Ada.Text_IO.Put_Line ("T4'Delta = " & Long_Long_Float'Image (T4'Delta));
-		Ada.Text_IO.Put_Line ("T4'Small = " & Long_Long_Float'Image (T4'Small));
+		pragma Assert (T4'Delta = T4'(0.01));
+		pragma Assert (T4'Small = T4'(0.01));
 		pragma Assert (T4'Image (1.45) = " 1.45");
 		pragma Assert (T4'Mantissa = 8); -- log 199 / log 2 = 7.6...
 	end;
@@ -18,8 +18,8 @@ begin
 		pragma Assert (T5'Aft = 1);
 	begin
 		-- ordinary fixed type does not have 'Scale attribute.
-		Ada.Text_IO.Put_Line ("T5'Delta = " & Long_Long_Float'Image (T5'Delta));
-		Ada.Text_IO.Put_Line ("T5'Small = " & Long_Long_Float'Image (T5'Small));
+		pragma Assert (T5'Delta = T5'(100.0));
+		pragma Assert (T5'Small = T5'(100.0));
 		pragma Assert (T5'Image (-128.0) = "-128.0");
 		pragma Assert (T5'Mantissa in 7 .. 8); -- log 100 / log 2 = 6.6...
 		-- but T5'Mantissa = 8, not 7. errors in calculation?

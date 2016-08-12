@@ -3,8 +3,8 @@ with Ada.Exceptions;
 with Ada.Float;
 procedure image is
 	type Ordinal_Fixed is delta 0.1 range -99.9 .. 99.9;
-	type Short_Fixed is delta 0.1 digits 2;
-	type Long_Fixed is delta 0.1 digits 10;
+	type Short_Decimal is delta 0.1 digits 2;
+	type Long_Decimal is delta 0.1 digits 10;
 	type Enum8 is (AAA, BBB, CCC);
 	type Enum16 is (AAA, BBB, CCC);
 	for Enum16 use (AAA => 0, BBB => 1, CCC => 16#ffff#);
@@ -61,10 +61,10 @@ begin
 		Ada.Debug.Put (Long_Long_Float'Image (Long_Long_Float'Last));
 		pragma Assert (Ordinal_Fixed'Image (Ordinal_Fixed'First) = "-99.9");
 		pragma Assert (Ordinal_Fixed'Image (Ordinal_Fixed'Last) = " 99.9");
-		pragma Assert (Short_Fixed'Image (Short_Fixed'First) = "-9.9");
-		pragma Assert (Short_Fixed'Image (Short_Fixed'Last) = " 9.9");
-		pragma Assert (Long_Fixed'Image (Long_Fixed'First) = "-999999999.9");
-		pragma Assert (Long_Fixed'Image (Long_Fixed'Last) = " 999999999.9");
+		pragma Assert (Short_Decimal'Image (Short_Decimal'First) = "-9.9");
+		pragma Assert (Short_Decimal'Image (Short_Decimal'Last) = " 9.9");
+		pragma Assert (Long_Decimal'Image (Long_Decimal'First) = "-999999999.9");
+		pragma Assert (Long_Decimal'Image (Long_Decimal'Last) = " 999999999.9");
 	end;
 	-- 'Value
 	declare
@@ -136,12 +136,24 @@ begin
 		pragma Assert (Long_Long_Float'Value (Long_Long_Float'Image (Long_Long_Float'Last * 0.999999999999999999)) = Long_Long_Float'Last);
 		pragma Assert (Long_Long_Float'Value ("0.01") = 0.01);
 		pragma Assert (Long_Long_Float'Value ("0.001") = 0.001);
-		pragma Assert (Ordinal_Fixed'Value (Ordinal_Fixed'Image (Ordinal_Fixed'First)) = Ordinal_Fixed'First);
-		pragma Assert (Ordinal_Fixed'Value (Ordinal_Fixed'Image (Ordinal_Fixed'Last)) = Ordinal_Fixed'Last);
-		pragma Assert (Short_Fixed'Value (Short_Fixed'Image (Short_Fixed'First)) = Short_Fixed'First);
-		pragma Assert (Short_Fixed'Value (Short_Fixed'Image (Short_Fixed'Last)) = Short_Fixed'Last);
-		pragma Assert (Long_Fixed'Value (Long_Fixed'Image (Long_Fixed'First)) = Long_Fixed'First);
-		pragma Assert (Long_Fixed'Value (Long_Fixed'Image (Long_Fixed'Last)) = Long_Fixed'Last);
+		pragma Assert (
+			Ordinal_Fixed'Value (Ordinal_Fixed'Image (Ordinal_Fixed'First)) =
+			Ordinal_Fixed'First);
+		pragma Assert (
+			Ordinal_Fixed'Value (Ordinal_Fixed'Image (Ordinal_Fixed'Last)) =
+			Ordinal_Fixed'Last);
+		pragma Assert (
+			Short_Decimal'Value (Short_Decimal'Image (Short_Decimal'First)) =
+			Short_Decimal'First);
+		pragma Assert (
+			Short_Decimal'Value (Short_Decimal'Image (Short_Decimal'Last)) =
+			Short_Decimal'Last);
+		pragma Assert (
+			Long_Decimal'Value (Long_Decimal'Image (Long_Decimal'First)) =
+			Long_Decimal'First);
+		pragma Assert (
+			Long_Decimal'Value (Long_Decimal'Image (Long_Decimal'Last)) =
+			Long_Decimal'Last);
 	end;
 	-- 'Width
 	begin
@@ -286,7 +298,10 @@ begin
 			null;
 		end;
 		declare
-			subtype T is Short_Fixed range Short_Fixed'First .. Short_Fixed'Value (Short_Fixed'Image (Short_Fixed'Last));
+			subtype T is
+				Short_Decimal range
+					Short_Decimal'First ..
+					Short_Decimal'Value (Short_Decimal'Image (Short_Decimal'Last));
 		begin
 			Ada.Debug.Put (Integer'Image (T'Width));
 			pragma Assert (T'Wide_Width = T'Width);
@@ -295,7 +310,10 @@ begin
 			null;
 		end;
 		declare
-			subtype T is Long_Fixed range Long_Fixed'First .. Long_Fixed'Value (Long_Fixed'Image (Long_Fixed'Last));
+			subtype T is
+				Long_Decimal range
+					Long_Decimal'First ..
+					Long_Decimal'Value (Long_Decimal'Image (Long_Decimal'Last));
 		begin
 			Ada.Debug.Put (Integer'Image (T'Width));
 			pragma Assert (T'Wide_Width = T'Width);
