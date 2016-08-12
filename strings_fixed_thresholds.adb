@@ -4,7 +4,7 @@ with Ada.Strings.Functions.Maps;
 with Ada.Strings.Maps;
 with Ada.Strings.Wide_Functions.Maps;
 with Ada.Strings.Wide_Wide_Functions.Maps;
-procedure fixed_thresholds is
+procedure strings_fixed_thresholds is
 begin
 	declare
 		A_Set : constant Ada.Strings.Maps.Character_Set :=
@@ -405,4 +405,4 @@ begin
 		Test_Wide_Wide_Functions;
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
-end fixed_thresholds;
+end strings_fixed_thresholds;

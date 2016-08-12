@@ -1,15 +1,12 @@
+-- { dg-do run }
 with Ada.Float;
 -- FreeBSD 7.x does not have nan, nanf, nal, but 8.x have.
-procedure floats is
+procedure float_operators is
 	generic
 		type T is digits <>;
 	procedure Test;
 	procedure Test is
 		function Infinity is new Ada.Float.Infinity (T);
-		function NaN is new Ada.Float.NaN (T);
-		function Is_Infinity is new Ada.Float.Is_Infinity (T);
-		function Is_NaN is new Ada.Float.Is_NaN (T);
-		function Is_Negative is new Ada.Float.Is_Negative (T);
 		X : T := T'Value ("2.0");
 		type Unaligned is record
 			Padding : Character;
@@ -18,16 +15,6 @@ procedure floats is
 		pragma Pack (Unaligned);
 		Y : Unaligned := (ASCII.NUL, T'Value ("3.5"));
 	begin
-		pragma Assert (T'Image (Infinity) = " INF");
-		pragma Assert (T'Image (-Infinity) = "-INF");
-		pragma Assert (Is_Infinity (Infinity));
-		pragma Assert (T'Image (NaN) = " NAN");
-		pragma Assert (T'Image (-NaN) = "-NAN");
-		pragma Assert (not (-NaN < 0.0)); -- comparison NaN is always False
-		pragma Assert (Is_NaN (NaN));
-		pragma Assert (Is_Negative (-1.0));
-		pragma Assert (not Is_Negative (0.0));
-		pragma Assert (not Is_Negative (+1.0));
 		pragma Assert (T'Adjacent (X, Infinity) > X);
 		pragma Assert (T'Adjacent (X, -Infinity) < X);
 		pragma Assert (T'Floor (T'Adjacent (X, Infinity)) = X);
@@ -97,22 +84,5 @@ begin
 	begin
 		Custom_Float_Test;
 	end;
-	Dividing : declare
-		procedure Divide is new Ada.Float.Divide (
-			Long_Long_Float,
-			Long_Long_Float,
-			Long_Long_Float,
-			Long_Long_Float);
-		Q, R : Long_Long_Float;
-	begin
-		Divide (4.5, 2.0, Q, R);
-		pragma Assert (Q = 2.0 and then R = 0.5);
-		Divide (5.0, 0.5, Q, R);
-		pragma Assert (Q = 10.0 and then R = 0.0);
-		Divide (0.9, 1.0, Q, R);
-		pragma Assert (Q = 0.0 and then R = 0.9);
-		Divide (-0.9, 1.0, Q, R);
-		pragma Assert (Q = 0.0 and then R = -0.9);
-	end Dividing;
 	pragma Debug (Ada.Debug.Put ("OK"));
-end floats;
+end float_operators;
