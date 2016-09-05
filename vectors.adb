@@ -272,7 +272,8 @@ begin
 				function New_X return Character renames 'x';
 				P : LVectors.Cursor;
 			begin
-				LVectors.Insert (LC, LVectors.No_Element, New_X'Access, P);
+				LVectors.Insert (LC, LVectors.No_Element, New_X'Access,
+					Position => P);
 			end;
 		end loop;
 	end;
