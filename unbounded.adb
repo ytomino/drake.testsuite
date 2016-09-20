@@ -19,6 +19,9 @@ procedure unbounded is
 		declare -- Append (S, S)
 			S : Unbounded.Unbounded_String;
 		begin
+			-- null strings
+			Unbounded.Append (S, S);
+			pragma Assert (Unbounded.Is_Null (S));
 			-- AB
 			Unbounded.Set_Unbounded_String (S, Unbounded.String_Type'(A, B));
 			Unbounded.Append (S, S);
