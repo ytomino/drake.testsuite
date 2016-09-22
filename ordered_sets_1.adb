@@ -175,15 +175,23 @@ begin
 		Z := X;
 		Sets.Intersection (Z, Y);
 		pragma Assert (Z = To_Set ((1, 3)));
+		Sets.Intersection (Z, Z); -- same container
+		pragma Assert (Z = To_Set ((1, 3)));
 		Z := X;
 		Sets.Union (Z, Y);
+		pragma Assert (Z = To_Set ((1, 2, 3, 5)));
+		Sets.Union (Z, Z); -- same container
 		pragma Assert (Z = To_Set ((1, 2, 3, 5)));
 		Z := X;
 		Sets.Symmetric_Difference (Z, Y);
 		pragma Assert (Z = To_Set ((2, 5)));
+		Sets.Symmetric_Difference (Z, Z); -- same container
+		pragma Assert (Sets.Is_Empty (Z));
 		Z := X;
 		Sets.Difference (Z, Y);
 		pragma Assert (Z = Sets.To_Set (2));
+		Sets.Difference (Z, Z); -- same container
+		pragma Assert (Sets.Is_Empty (Z));
 	end;
 	declare -- Insert and Delete with Dump
 		X : Sets.Set;
