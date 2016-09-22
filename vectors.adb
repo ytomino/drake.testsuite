@@ -199,16 +199,6 @@ begin
 			pragma Assert (IX.Element (I) = X.Element (I));
 			null;
 		end loop;
-		-- insert itself
-		Vectors.Insert (X, 3, X);
-		IVectors.Insert (IX, 3, IX);
-		pragma Assert (X.Length = 8);
-		pragma Assert (X.Constant_Reference.Element.all = "abababab");
-		pragma Assert (IX.Length = 8);
-		for I in 1 .. 8 loop
-			pragma Assert (IX.Element (I) = X.Element (I));
-			null;
-		end loop;
 	end;
 	declare -- Iterate (invalid ranges)
 		generic
