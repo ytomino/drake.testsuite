@@ -70,6 +70,47 @@ begin
 		pragma Assert (X.Constant_Reference (1).Element /=
 			Z.Constant_Reference (1).Element);
 	end;
+	declare -- copy-on-write for different lengths
+		X, Y : Vectors.Vector;
+	begin
+		-- copy by the other (original) object
+		Vectors.Clear (X);
+		Vectors.Append (X, 'a');
+		Vectors.Append (X, 'b');
+		Vectors.Append (X, 'c');
+		Y := X; -- share
+		Vectors.Append (Y, 'd');
+		declare
+			Ref : Vectors.Reference_Type renames X.Reference (1); -- copy
+		begin
+			pragma Assert (Ref.Element.all = 'a');
+			null;
+		end;
+		pragma Assert (Y.Element (4) = 'd');
+	end;
+	declare -- copy-on-write for different lengths
+		X, Y : Vectors.Vector;
+	begin
+		-- copy by the other (copied) object
+		Vectors.Clear (X);
+		Vectors.Append (X, 'a');
+		Vectors.Append (X, 'b');
+		Vectors.Append (X, 'c');
+		Y := X; -- share
+		Vectors.Append (X, 'd');
+		declare
+			Ref : Vectors.Reference_Type renames Y.Reference (1); -- copy
+		begin
+			pragma Assert (Ref.Element.all = 'a');
+			null;
+		end;
+		pragma Assert (X.Element (4) = 'd');
+	end;
+	declare -- Set_Length
+		X : Vectors.Vector;
+	begin
+		Vectors.Set_Length (X, 10);
+	end;
 	declare -- insert
 		use type Vectors.Vector;
 		X : aliased Vectors.Vector := 'A' & 'B' & 'C' & 'D';
