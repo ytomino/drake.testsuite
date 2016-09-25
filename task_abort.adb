@@ -165,6 +165,7 @@ begin
 			end;
 		end T5;
 	begin
+		delay 0.1;
 		abort T5;
 		delay 0.1;
 		pragma Assert (T5_State = 5);
