@@ -73,8 +73,7 @@ begin
 		pragma Assert (Derived_Creation_Count = 1);
 		begin
 			declare
-				Bad : Root.I'Class := Virtual_Create (Root.I'Tag, Params'Access);
-				pragma Unreferenced (Bad);
+				Dummy : Root.I'Class := Virtual_Create (Root.I'Tag, Params'Access);
 			begin
 				raise Program_Error; -- unreachable
 			end;

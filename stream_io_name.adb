@@ -50,9 +50,9 @@ begin
 							Create (File);
 						when Pipe =>
 							declare
-								Dummy : File_Type;
+								The_Pipe : File_Type;
 							begin
-								Pipes.Create (File, Dummy);
+								Pipes.Create (File, The_Pipe);
 							end;
 					end case;
 					Ada.Directories.Set_Directory ("..");
