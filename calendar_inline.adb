@@ -1,7 +1,7 @@
 -- { dg-do assemble }
 -- { dg-additional-options -O2 -gnatn }
--- { dg-final { scan-assembler-times "^\tcall\t_*ada__calendar__packed_split$" 1 } }
--- { dg-final { scan-assembler-times "^\tcall\t_*ada__calendar__formatting__packed_split$" 1 } }
+-- { dg-final { scan-assembler-times "^\tcall\t_*ada__calendar__packed_split(@PLT)?$" 1 } }
+-- { dg-final { scan-assembler-times "^\tcall\t_*ada__calendar__formatting__packed_split(@PLT)?$" 1 } }
 with ada.text_io; use ada.text_io;
 with ada.calendar;
 with ada.calendar.formatting;
