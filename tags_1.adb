@@ -45,6 +45,8 @@ begin
 		pragma Assert (Ref.all in DI'Class); -- resolved inline (no runtime)
 		pragma Assert (Ref.all in I'Class); -- use IW_Membership
 		pragma Assert (IRef'Tag = DI'Tag);
+		pragma Assert (IRef.all in DI'Class);
+		pragma Assert (T_Access (IRef) = Ref);
 		declare
 			type IA is access all I'Class;
 			function I_Cast is new Ada.Unchecked_Conversion (IA, System.Address);
