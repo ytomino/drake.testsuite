@@ -3,7 +3,7 @@ with Ada.Real_Time;
 with Ada.Synchronous_Task_Control.EDF;
 procedure task_synchronous_control_abort is
 begin
-	--  abort Suspend_Until_True
+	-- abort Suspend_Until_True
 	declare
 		ev : Ada.Synchronous_Task_Control.Suspension_Object;
 		T1_State : Positive := 1;
@@ -23,7 +23,7 @@ begin
 		pragma Assert (T1'Terminated);
 		pragma Assert (T1_State = 2);
 	end;
-	--  abort Suspend_Until_True_And_Set_Deadline
+	-- abort Suspend_Until_True_And_Set_Deadline
 	declare
 		ev : Ada.Synchronous_Task_Control.Suspension_Object;
 		T2_State : Positive := 1;

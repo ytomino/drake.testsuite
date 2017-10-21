@@ -33,7 +33,7 @@ procedure stack_allocators is
 begin
 	Dump_Secondary_Stack;
 	declare
-		M : System.Secondary_Stack.Mark_Id := 	System.Secondary_Stack.SS_Mark;
+		M : System.Secondary_Stack.Mark_Id := System.Secondary_Stack.SS_Mark;
 		A : System.Address;
 		S : String (1 .. 13 + System.Formatting.Address.Address_String'Length);
 	begin

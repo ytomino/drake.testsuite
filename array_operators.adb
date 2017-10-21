@@ -15,7 +15,7 @@ procedure array_operators is
 		z2 : a (1 .. 2);
 		z4 : a (1 .. 4);
 	begin
-		z2 := not ft; 	-- use s-boarop
+		z2 := not ft; -- use s-boarop
 		pragma Assert (z2 = a'(True, False));
 		pragma Assert ((not ft) = a'(True, False)); -- inlined
 		z4 := fftt and ftft; -- use s-boarop
