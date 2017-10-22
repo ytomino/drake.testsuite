@@ -1,6 +1,7 @@
 -- { dg-do run }
 with Ada.Unchecked_Deallocation;
 with System.Formatting;
+with System.Long_Long_Integer_Types;
 with System.Storage_Elements;
 with System.System_Allocators.Allocated_Size;
 procedure standard_allocators is
@@ -11,7 +12,7 @@ procedure standard_allocators is
 		Error : Boolean;
 	begin
 		System.Formatting.Image (
-			System.Formatting.Longest_Unsigned (X),
+			System.Long_Long_Integer_Types.Long_Long_Unsigned (X),
 			S,
 			Last,
 			16,
@@ -25,7 +26,7 @@ procedure standard_allocators is
 		Error : Boolean;
 	begin
 		System.Formatting.Image (
-			System.Formatting.Longest_Unsigned (X),
+			System.Long_Long_Integer_Types.Long_Long_Unsigned (X),
 			S,
 			Last,
 			Padding => ' ',
