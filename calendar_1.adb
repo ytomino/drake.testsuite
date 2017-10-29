@@ -1,13 +1,10 @@
 -- { dg-do run }
 with Ada.Calendar.Formatting;
+with Ada.Calendar.Naked;
 with Ada.Calendar.Time_Zones;
 with Ada.Formatting;
-with Ada.Unchecked_Conversion;
+with System.Native_Time;
 procedure calendar_1 is
-	type Integer_Time is mod 2 ** Duration'Size;
-	pragma Warnings (Off, "representation of Time values may change between GNAT versions");
-	function To_Integer is new Ada.Unchecked_Conversion (Ada.Calendar.Time, Integer_Time);
-	pragma Warnings (On, "representation of Time values may change between GNAT versions");
 	function Image_4 is
 		new Ada.Formatting.Integer_Image (Integer,
 			Signs => Ada.Formatting.Triming_Sign_Marks, Width => 4);
@@ -29,7 +26,10 @@ procedure calendar_1 is
 	Day_Name : Ada.Calendar.Formatting.Day_Name;
 	Remaked : Ada.Calendar.Time;
 begin
-	Ada.Debug.Put (Integer_Time'Image (To_Integer (Now)));
+	Ada.Debug.Put (
+		System.Native_Time.Nanosecond_Number'Image (
+			System.Native_Time.Nanosecond_Number'Integer_Value (
+				Ada.Calendar.Naked.Seconds_From_2150 (Now))));
 	Ada.Calendar.Split (Now, Year, Month, Day, Seconds);
 	Ada.Calendar.Formatting.Split (Seconds, H, M, S, SS);
 	Ada.Debug.Put (
@@ -125,6 +125,12 @@ begin
 			and then Seconds = 0.0);
 	exception
 		when Ada.Calendar.Time_Error => Ada.Debug.Put ("Time_Error");
+	end;
+	declare -- 2150-01-01
+		Z : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (2150, 1, 1);
+	begin
+		pragma Assert (Ada.Calendar.Naked.Seconds_From_2150 (Z) = 0.0);
+		null;
 	end;
 	declare -- overflow
 		D : Ada.Calendar.Time;
