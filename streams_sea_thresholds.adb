@@ -1,4 +1,5 @@
 -- { dg-do run }
+-- { dg-additional-options "-largs -licucore -margs" { target "*-*-darwin*" } }
 with Ada.Environment_Encoding.Encoding_Streams;
 with Ada.Environment_Encoding.Generic_Strings;
 with Ada.Environment_Encoding.Names;

@@ -1,5 +1,5 @@
 -- { dg-do compile }
--- { dg-additional-options -O2 -gnat-a -gnatp -gnatn2 -Winline -Werror }
+-- { dg-additional-options "-O2 -gnat-a -gnatp -gnatn2 -Winline -Werror" }
 with Ada.Characters.Conversions;
 with Ada.Colors;
 with Ada.Command_Line;

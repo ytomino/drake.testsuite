@@ -1,5 +1,5 @@
 -- { dg-do run }
--- { dg-output "handled!$" }
+-- { dg-output "handled!\n" }
 with Ada;
 procedure exception2 is
 begin

@@ -1,4 +1,6 @@
 -- { dg-do run }
+-- { dg-additional-options "-O2" }
+-- { dg-timeout-factor 4 }
 with Ada.Numerics.Generic_Complex_Arrays;
 with Ada.Numerics.Generic_Complex_Elementary_Functions;
 with Ada.Numerics.Generic_Complex_Types;

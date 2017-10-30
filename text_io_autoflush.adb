@@ -1,6 +1,6 @@
 -- { dg-do run }
--- { dg-shouldfail }
--- { dg-output "^STDOUT$" }
+-- { dg-shouldfail "PROGRAM_ERROR" }
+-- { dg-output "^STDOUT\n" }
 with Ada.Text_IO;
 procedure text_io_autoflush is
 	use Ada.Text_IO;

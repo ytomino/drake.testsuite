@@ -1,4 +1,5 @@
 -- { dg-do run }
+-- { dg-additional-options "-largs -licucore -margs" { target "*-*-darwin*" } }
 with Ada.Environment_Encoding;
 procedure environment_encoding is
 begin

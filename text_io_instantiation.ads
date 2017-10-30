@@ -1,7 +1,7 @@
--- { dg-do assemble }
--- { dg-additional-options -O }
--- { dg-final { scan-assembler-not "__elab[sb](@PLT)?$" } }
--- { dg-final { scan-assembler-not "\tcall\t_*__enable_execute_stack(@PLT?)$" } }
+-- { dg-do compile }
+-- { dg-additional-options "-O -ftrampolines" }
+-- { dg-final { scan-assembler-not "__elab\[sb\]" } }
+-- { dg-final { scan-assembler-not "__enable_execute_stack" } }
 pragma Restrictions (No_Elaboration_Code);
 pragma Restrictions (No_Implicit_Dynamic_Code);
 with Ada.Numerics.Complex_Types;

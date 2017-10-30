@@ -1,5 +1,6 @@
 -- { dg-do run }
--- { dg-final scan-file-not "\bsystem\.tasks\b" "b~protected_rw.ads" }
+-- { dg-additional-options "-bargs -A=protected_rw.lst -margs" }
+-- { dg-final { scan-file-not "protected_rw.lst" "s-tasks" } }
 with Ada;
 procedure protected_rw is
 	protected RW is

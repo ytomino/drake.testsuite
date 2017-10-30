@@ -1,7 +1,8 @@
 -- { dg-do run }
--- { dg-shouldfail }
--- { dg-output "handled\.$" }
--- { dg-output "^raised ADA\.ASSERTIONS\.ASSERTION_ERROR : assert\.adb:[0-9]+$" }
+-- { dg-shouldfail "ADA.ASSERTIONS.ASSERTION_ERROR" }
+-- { dg-output "handled\\.\n" }
+-- { dg-output ".*\n" }
+-- { dg-output "raised ADA\\.ASSERTIONS\\.ASSERTION_ERROR : assert\\.adb:\[0-9\]*\n" }
 with Ada.Assertions;
 procedure assert is
 begin

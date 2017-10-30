@@ -1,7 +1,8 @@
 -- { dg-do run }
--- { dg-shouldfail }
--- { dg-output "handled\.\.\. and reraising\.\.\.$" }
--- { dg-output "^raised PROGRAM_ERROR : exception3\.adb:[0-9]+ explicit raise$" }
+-- { dg-shouldfail "PROGRAM_ERROR" }
+-- { dg-output "handled\\.\\.\\. and reraising\\.\\.\\.\n" }
+-- { dg-output ".*\n" }
+-- { dg-output "raised PROGRAM_ERROR : exception3\\.adb:\[0-9\]* explicit raise\n" }
 with Ada;
 procedure exception3 is
 begin
