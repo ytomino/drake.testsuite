@@ -4,11 +4,12 @@ with Ada.Characters.Conversions;
 with Ada.Colors;
 with Ada.Command_Line;
 with Ada.Directories.Temporary;
+with Ada.Directories.Volumes;
 with Ada.Dispatching;
 with Ada.Environment_Encoding;
 with Ada.Environment_Variables;
--- with Ada.Interrupts;
--- with Ada.Locales;
+with Ada.Interrupts;
+with Ada.Locales;
 with Ada.Naked_Text_IO;
 with Ada.Processes;
 with Ada.Streams.Naked_Stream_IO;
@@ -25,6 +26,12 @@ procedure inline is
 	procedure Ignore (X : String) with Import;
 	procedure Ignore (X : Wide_String) with Import;
 	procedure Ignore (X : Wide_Wide_String) with Import;
+	procedure Ignore (X : Ada.Directories.Volumes.File_System) with Import;
+	procedure Ignore (X : Ada.Environment_Encoding.Encoding_Id) with Import;
+	procedure Ignore (X : Ada.Locales.ISO_639_Alpha_2) with Import;
+	procedure Ignore (X : Ada.Locales.ISO_639_Alpha_3) with Import;
+	procedure Ignore (X : Ada.Locales.ISO_3166_1_Alpha_2) with Import;
+	procedure Ignore (X : Ada.Processes.Process) with Import;
 	procedure Ignore (X : access Ada.Naked_Text_IO.Non_Controlled_File_Type)
 		with Import;
 	procedure Ignore (
@@ -34,6 +41,8 @@ procedure inline is
 	procedure Ignore (X : Ada.Streams.Stream_Element_Offset) with Import;
 	procedure Ignore (X : Ada.Strings.Maps.Character_Set) with Import;
 	procedure Ignore (X : Ada.Strings.Maps.Character_Mapping) with Import;
+	procedure Ignore (X : Ada.Task_Identification.Task_Id) with Import;
+	procedure Ignore (X : Ada.Text_IO.Terminal.Colors.Color) with Import;
 	procedure Ignore (X : System.Address) with Import;
 begin -- inline renamings
 	-- private entities required by compiler
@@ -42,115 +51,128 @@ begin -- inline renamings
 	declare
 		use Ada.Characters.Conversions;
 	begin
-		Ignore (To_Wide_String (String'(""), Substitute => ""));
-		Ignore (To_Wide_Wide_String (String'(""), Substitute => ""));
+		Ignore (To_Wide_String (String'(""), Substitute => "")); -- renamed
+		Ignore (To_Wide_Wide_String (String'(""), Substitute => "")); -- renamed
 		Ignore (To_Wide_Wide_String (Wide_String'(""), Substitute => ""));
+			-- renamed
 --		Ignore (To_String (Wide_String'(""), Substitute => ' '));
-		Ignore (To_String (Wide_String'(""), Substitute => ""));
+		Ignore (To_String (Wide_String'(""), Substitute => "")); -- renamed
 --		Ignore (To_String (Wide_Wide_String'(""), Substitute => ' '));
-		Ignore (To_String (Wide_Wide_String'(""), Substitute => ""));
+		Ignore (To_String (Wide_Wide_String'(""), Substitute => "")); -- renamed
 --		Ignore (To_Wide_String (Wide_Wide_String'(""), Substitute => ' '));
 		Ignore (To_Wide_String (Wide_Wide_String'(""), Substitute => ""));
+			-- renamed
 	end;
 	-- Ada.Command_Line
 	declare
 		use Ada.Command_Line;
 	begin
-		Ignore (Argument_Count);
+		Ignore (Argument_Count); -- renamed
 	end;
 	-- Ada.Directories
 	declare
 		use Ada.Directories;
 		No_Existing_Name : constant String := "$$$";
 	begin
-		Ignore (Current_Directory);
-		Set_Directory (No_Existing_Name);
-		Delete_Directory (No_Existing_Name);
-		Delete_File (No_Existing_Name);
+		Ignore (Current_Directory); -- renamed
+		Set_Directory (No_Existing_Name); -- renamed
+		Delete_Directory (No_Existing_Name); -- renamed
+		Delete_File (No_Existing_Name); -- renamed
 		Rename (No_Existing_Name, No_Existing_Name, Overwrite => False);
+			-- renamed
 --		Copy_File (No_Existing_Name, No_Existing_Name,
 --			Form => "overwrite=false");
 		Copy_File (No_Existing_Name, No_Existing_Name, Overwrite => False);
-		Replace_File (No_Existing_Name, No_Existing_Name);
+			-- renamed
+		Replace_File (No_Existing_Name, No_Existing_Name); -- renamed
 		Symbolic_Link (No_Existing_Name, No_Existing_Name, Overwrite => False);
-		Ignore (Full_Name (No_Existing_Name));
-		Ignore (Exists (No_Existing_Name));
-	end;
-	-- Ada.Directories.Temporary
-	declare
-		use Ada.Directories.Temporary;
-		No_Existing_Name : constant String := "$$$";
-	begin
-		Ignore (Temporary_Directory);
-		Set_Temporary_Directory (No_Existing_Name);
-		Ignore (Create_Temporary_File (Directory => No_Existing_Name));
-		Ignore (Create_Temporary_Directory (Directory => No_Existing_Name));
+			-- renamed
+		Ignore (Full_Name (No_Existing_Name)); -- renamed
+		Ignore (Exists (No_Existing_Name)); -- renamed
+		-- Ada.Directories.Temporary
+		declare
+			use Temporary;
+		begin
+			Ignore (Temporary_Directory); -- renamed
+			Set_Temporary_Directory (No_Existing_Name); -- renamed
+			Ignore (Create_Temporary_File (Directory => No_Existing_Name));
+				-- renamed
+			Ignore (Create_Temporary_Directory (Directory => No_Existing_Name));
+				-- renamed
+		end;
+		-- Ada.Directories.Volumes
+		declare
+			use Volumes;
+		begin
+			Ignore (Where (No_Existing_Name)); -- renamed
+		end;
 	end;
 	-- Ada.Dispatching
 	declare
 		use Ada.Dispatching;
 	begin
-		Ada.Dispatching.Yield;
+		Ada.Dispatching.Yield; -- renamed
 	end;
 	-- Ada.Environment_Encoding
 	declare
 		use Ada.Environment_Encoding;
-		procedure Ignore (X : Encoding_Id) with Import;
 		Encoding : constant Encoding_Id := UTF_8;
-		Conv : Converter;
-		pragma Unmodified (Conv);
+--		Conv : Converter;
 	begin
-		Ignore (Image (Encoding));
-		Ignore (Default_Substitute (Encoding));
-		Ignore (Min_Size_In_Stream_Elements (Encoding));
-		Ignore (Current_Encoding);
-		Ignore (Is_Open (Conv));
+		Ignore (Image (Encoding)); -- renamed
+		Ignore (Default_Substitute (Encoding)); -- renamed
+		Ignore (Min_Size_In_Stream_Elements (Encoding)); -- renamed
+		Ignore (Current_Encoding); -- renamed
+--		Ignore (Is_Open (Conv));
 	end;
 	-- Ada.Environment_Variables
 	declare
 		use Ada.Environment_Variables;
 		No_Existing_Name : constant String := "$$$";
 	begin
-		Ignore (Value (No_Existing_Name));
-		Ignore (Value (No_Existing_Name, Default => ""));
-		Ignore (Exists (No_Existing_Name));
-		Set (No_Existing_Name, "1");
-		Clear (No_Existing_Name);
-		Clear;
+		Ignore (Value (No_Existing_Name)); -- renamed
+		Ignore (Value (No_Existing_Name, Default => "")); -- renamed
+		Ignore (Exists (No_Existing_Name)); -- renamed
+		Set (No_Existing_Name, "1"); -- renamed
+		Clear (No_Existing_Name); -- renamed
+		Clear; -- renamed
 	end;
 	-- Ada.Interrupts
---	declare
---		use Ada.Interrupts;
---		Interrupt : constant Interrupt_Id := Interrupt_Id'First;
---		Old_Handler : Parameterless_Handler;
---	begin
---		Ignore (Is_Reserved (Interrupt));
---		Unchecked_Exchange_Handler (Old_Handler, null, Interrupt);
---		Raise_Interrupt (Interrupt);
---	end;
+	declare
+		use Ada.Interrupts;
+		Interrupt : constant Interrupt_Id := Interrupt_Id'First;
+		Old_Handler : Parameterless_Handler;
+	begin
+		Ignore (Is_Reserved (Interrupt)); -- renamed
+		Unchecked_Exchange_Handler (Old_Handler, null, Interrupt); -- renamed
+		Raise_Interrupt (Interrupt); -- renamed
+	end;
 	-- Ada.Locales
---	declare
---		use Ada.Locales;
---		procedure Ignore (X : ISO_639_Alpha_2) with Import;
---		procedure Ignore (X : ISO_639_Alpha_3) with Import;
---	begin
---		Ignore (ISO_639_Alpha_2'(Language));
---		Ignore (ISO_639_Alpha_3'(Language));
---	end;
+	declare
+		use Ada.Locales;
+	begin
+		Ignore (ISO_639_Alpha_2'(Language)); -- renamed
+		Ignore (ISO_639_Alpha_3'(Language)); -- renamed
+		Ignore (Country); -- renamed
+	end;
 	-- Ada.Processes
 	declare
 		use Ada.Processes;
 		Command_Line : String (1 .. 10);
 		Last : Natural := Command_Line'First - 1;
 		Argument : constant String := "-";
-		Child : Process;
---		Command : Command_Type;
-		Status : Ada.Command_Line.Exit_Status;
+--		Child : Process;
+		Command : Command_Type;
+--		Status : Ada.Command_Line.Exit_Status;
 	begin
-		Append_Argument (Command_Line, Last, Argument);
-		Ignore (Is_Open (Child));
+		Append_Argument (Command_Line, Last, Argument); -- renamed
+--		Ignore (Is_Open (Child));
+--		Create (Child, Command);
+--		Create (Child, Command_Line);
+		Ignore (Create (Command)); -- renamed
+		Ignore (Create (Command_Line)); -- renamed
 --		Shell (Command, Status);
-		Shell (Command_Line, Status);
+--		Shell (Command_Line, Status);
 --		Shell (Command);
 --		Shell (Command_Line);
 	end;
@@ -159,79 +181,77 @@ begin -- inline renamings
 		use Ada.Streams.Stream_IO.Naked;
 		File : Ada.Streams.Stream_IO.File_Type;
 	begin
-		Ignore (Non_Controlled (File));
+		Ignore (Non_Controlled (File)); -- renamed
 	end;
 	-- Ada.Strings.Maps.Constants
 	declare
 		use Ada.Strings.Maps.Constants;
 	begin
-		Ignore (Unassigned_Set);
-		Ignore (Uppercase_Letter_Set);
-		Ignore (Lowercase_Letter_Set);
-		Ignore (Titlecase_Letter_Set);
-		Ignore (Modifier_Letter_Set);
-		Ignore (Other_Letter_Set);
-		Ignore (Decimal_Number_Set);
-		Ignore (Letter_Number_Set);
-		Ignore (Other_Number_Set);
-		Ignore (Line_Separator_Set);
-		Ignore (Paragraph_Separator_Set);
-		Ignore (Control_Set);
-		Ignore (Format_Set);
-		Ignore (Private_Use_Set);
-		Ignore (Surrogate_Set);
-		Ignore (Base_Set);
-		Ignore (Graphic_Set);
-		Ignore (Letter_Set);
-		Ignore (Basic_Set);
-		Ignore (Decimal_Digit_Set);
-		Ignore (Hexadecimal_Digit_Set);
-		Ignore (Alphanumeric_Set);
-		Ignore (Special_Set);
-		Ignore (ISO_646_Set);
-		Ignore (Lower_Case_Map);
-		Ignore (Upper_Case_Map);
-		Ignore (Case_Folding_Map);
-		Ignore (Base_Map);
-		Ignore (Basic_Map);
+		Ignore (Unassigned_Set); -- renamed
+		Ignore (Uppercase_Letter_Set); -- renamed
+		Ignore (Lowercase_Letter_Set); -- renamed
+		Ignore (Titlecase_Letter_Set); -- renamed
+		Ignore (Modifier_Letter_Set); -- renamed
+		Ignore (Other_Letter_Set); -- renamed
+		Ignore (Decimal_Number_Set); -- renamed
+		Ignore (Letter_Number_Set); -- renamed
+		Ignore (Other_Number_Set); -- renamed
+		Ignore (Line_Separator_Set); -- renamed
+		Ignore (Paragraph_Separator_Set); -- renamed
+		Ignore (Control_Set); -- renamed
+		Ignore (Format_Set); -- renamed
+		Ignore (Private_Use_Set); -- renamed
+		Ignore (Surrogate_Set); -- renamed
+		Ignore (Base_Set); -- renamed
+		Ignore (Graphic_Set); -- renamed
+		Ignore (Letter_Set); -- renamed
+		Ignore (Basic_Set); -- renamed
+		Ignore (Decimal_Digit_Set); -- renamed
+		Ignore (Hexadecimal_Digit_Set); -- renamed
+		Ignore (Alphanumeric_Set); -- renamed
+		Ignore (Special_Set); -- renamed
+		Ignore (ISO_646_Set); -- renamed
+		Ignore (Lower_Case_Map); -- renamed
+		Ignore (Upper_Case_Map); -- renamed
+		Ignore (Case_Folding_Map); -- renamed
+		Ignore (Base_Map); -- renamed
+		Ignore (Basic_Map); -- renamed
 	end;
 	-- Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants
 	declare
 		use Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants;
 	begin
-		Ignore (Wide_Character_Set);
+		Ignore (Wide_Character_Set); -- renamed
 	end;
 	-- Ada.Task_Identification
 	declare
 		use Ada.Task_Identification;
-		procedure Ignore (X : Task_Id) with Import;
 	begin
-		Ignore (Current_Task);
-		Ignore (Environment_Task);
-		Abort_Task (Null_Task_Id);
-		Ignore (Is_Terminated (Null_Task_Id));
-		Ignore (Is_Callable (Null_Task_Id));
-		Ignore (Activation_Is_Complete (Null_Task_Id));
+		Ignore (Current_Task); -- renamed
+		Ignore (Environment_Task); -- renamed
+		Abort_Task (Null_Task_Id); -- renamed
+		Ignore (Is_Terminated (Null_Task_Id)); -- renamed
+		Ignore (Is_Callable (Null_Task_Id)); -- renamed
+		Ignore (Activation_Is_Complete (Null_Task_Id)); -- renamed
 	end;
 	-- Ada.Text_IO.Naked
 	declare
 		use Ada.Text_IO.Naked;
 		File : Ada.Text_IO.File_Type;
 	begin
-		Ignore (Non_Controlled (File));
+		Ignore (Non_Controlled (File)); -- renamed
 	end;
 	-- Ada.Text_IO.Terminal.Colors
 	declare
 		use Ada.Text_IO.Terminal.Colors;
-		procedure Ignore (X : Color) with Import;
 		Black : constant Ada.Colors.RGB := (0.0, 0.0, 0.0);
 	begin
-		Ignore (To_Color (Black));
+		Ignore (To_Color (Black)); -- renamed
 	end;
 	-- System.Program
 	declare
 		use System.Program;
 	begin
-		Ignore (System.Program.Load_Address);
+		Ignore (Load_Address); -- renamed
 	end;
 end inline;
