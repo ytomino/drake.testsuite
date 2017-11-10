@@ -5,6 +5,7 @@ with System.Long_Long_Integer_Types;
 with System.Storage_Elements;
 with System.System_Allocators.Allocated_Size;
 procedure standard_allocators is
+	use type System.Storage_Elements.Storage_Offset;
 	package System_Allocators renames System.System_Allocators;
 	procedure Put (X : System.Storage_Elements.Integer_Address) is
 		S : String (1 .. Standard'Address_Size / 4);
@@ -42,12 +43,15 @@ begin
 	begin
 		x := new Integer;
 		y := new Integer;
-		Put (System.Storage_Elements.To_Integer (x'Pool_Address));
-		Put (System_Allocators.Allocated_Size (x'Pool_Address));
-		Put (System.Storage_Elements.To_Integer (y'Pool_Address));
-		Put (System_Allocators.Allocated_Size (y'Pool_Address));
+		pragma Assert (
+			abs (x'Pool_Address - y'Pool_Address) >=
+			System.Storage_Elements.Storage_Offset'Max (
+				System_Allocators.Allocated_Size (x'Pool_Address),
+				System_Allocators.Allocated_Size (y'Pool_Address)));
 		Free (x);
 		Free (y);
+		pragma Assert (y = null);
+		Free (y); -- null
 	end;
 	declare -- low-level
 		x : System.Address;
@@ -59,6 +63,7 @@ begin
 		Put (System.Storage_Elements.To_Integer (x));
 		Put (System_Allocators.Allocated_Size (x));
 		System_Allocators.Free (x);
+		System_Allocators.Free (System.Null_Address); -- null
 	end;
 	pragma Debug (Ada.Debug.Put ("OK"));
 end standard_allocators;
