@@ -3,6 +3,13 @@ with Ada.Direct_IO;
 procedure direct_io_1 is
 	package Character_IO is new Ada.Direct_IO (Character);
 begin
+	declare
+		use Character_IO;
+		File : File_Type;
+	begin
+		pragma Assert (not Is_Open (File));
+		null;
+	end;
 	Test_Direct_IO : declare
 		use Character_IO;
 		type String_Access is access String;
