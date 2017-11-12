@@ -10,6 +10,16 @@ begin
 		pragma Assert (not Is_Open (File));
 		null;
 	end;
+	declare -- Mode
+		use Character_IO;
+		File : File_Type;
+	begin
+		for I in File_Mode loop
+			Create (File, I);
+			pragma Assert (Mode (File) = I);
+			Close (File);
+		end loop;
+	end;
 	Test_Direct_IO : declare
 		use Character_IO;
 		type String_Access is access String;
