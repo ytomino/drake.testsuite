@@ -3,7 +3,7 @@ with Ada.Numerics.MT19937;
 procedure mt19937_image is
 	package MT19937 renames Ada.Numerics.MT19937;
 	use type MT19937.State;
-	procedure Check (Initiator : MT19937.Cardinal) is
+	procedure Check (Initiator : MT19937.Unsigned_32) is
 		State : constant MT19937.State := MT19937.Initialize (Initiator);
 		S : constant String := MT19937.Image (State);
 		State_2 : constant MT19937.State := MT19937.Value (S);
@@ -21,7 +21,7 @@ procedure mt19937_image is
 	end Check;
 begin
 	Check (0);
-	Check (MT19937.Cardinal'Last);
+	Check (MT19937.Unsigned_32'Last);
 	Check (MT19937.Default_Initiator);
 	pragma Debug (Ada.Debug.Put ("OK"));
 end mt19937_image;
