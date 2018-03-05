@@ -73,21 +73,24 @@ begin
 		begin
 			pragma Assert (not Is_Infinity (Left));
 			pragma Assert (not Is_Infinity (Right));
-			return abs (Left - Right) / Float'Max (abs Left, abs Right) < Float'Model_Epsilon * 100.0;
+			return Standard."=" (Left, Right)
+				or else abs (Left - Right) / Float'Max (abs Left, abs Right) < Float'Model_Epsilon * 100.0;
 		end "=";
 		function "=" (Left, Right : Long_Float) return Boolean is
 			function Is_Infinity is new Ada.Float.Is_Infinity (Long_Float);
 		begin
 			pragma Assert (not Is_Infinity (Left));
 			pragma Assert (not Is_Infinity (Right));
-			return abs (Left - Right) / Long_Float'Max (abs Left, abs Right) < Long_Float'Model_Epsilon * 100.0;
+			return Standard."=" (Left, Right)
+				or else abs (Left - Right) / Long_Float'Max (abs Left, abs Right) < Long_Float'Model_Epsilon * 100.0;
 		end "=";
 		function "=" (Left, Right : Long_Long_Float) return Boolean is
 			function Is_Infinity is new Ada.Float.Is_Infinity (Long_Long_Float);
 		begin
 			pragma Assert (not Is_Infinity (Left));
 			pragma Assert (not Is_Infinity (Right));
-			return abs (Left - Right) / Long_Long_Float'Max (abs Left, abs Right) < Long_Long_Float'Model_Epsilon * 100.0;
+			return Standard."=" (Left, Right)
+				or else abs (Left - Right) / Long_Long_Float'Max (abs Left, abs Right) < Long_Long_Float'Model_Epsilon * 100.0;
 		end "=";
 		function "=" (Left, Right : Ordinal_Fixed) return Boolean is
 		begin
@@ -130,6 +133,15 @@ begin
 		pragma Assert (Long_Long_Unsigned'Value (Long_Long_Unsigned'Image (Long_Long_Unsigned'Last)) = Long_Long_Unsigned'Last);
 		pragma Assert (Float'Value (Float'Image (Float'First)) = Float'First);
 		pragma Assert (Float'Value (Float'Image (Float'Last)) = Float'Last);
+		pragma Assert (Float'Value ("0") = 0.0);
+		begin
+			if Float'Value ("10.0#1234.5#") = 1234.5 then
+				null;
+			end if;
+			pragma Assert (False);
+		exception
+			when Constraint_Error => null; -- OK
+		end;
 		pragma Assert (Long_Float'Value (Long_Float'Image (Long_Float'First * 0.999999999999999)) = Long_Float'First);
 		pragma Assert (Long_Float'Value (Long_Float'Image (Long_Float'Last * 0.999999999999999)) = Long_Float'Last);
 		pragma Assert (Long_Long_Float'Value (Long_Long_Float'Image (Long_Long_Float'First * 0.999999999999999999)) = Long_Long_Float'First);
