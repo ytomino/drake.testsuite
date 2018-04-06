@@ -7,10 +7,10 @@ with System.Native_Time;
 procedure calendar_1 is
 	function Image_4 is
 		new Ada.Formatting.Integer_Image (Integer,
-			Signs => Ada.Formatting.Triming_Sign_Marks, Width => 4);
+			Signs => Ada.Formatting.Triming_Sign_Marks, Digits_Width => 4);
 	function Image_2 is
 		new Ada.Formatting.Integer_Image (Integer,
-			Signs => Ada.Formatting.Triming_Sign_Marks, Width => 2);
+			Signs => Ada.Formatting.Triming_Sign_Marks, Digits_Width => 2);
 	use type Ada.Calendar.Time;
 	use type Ada.Calendar.Time_Zones.Time_Offset;
 	Now : Ada.Calendar.Time := Ada.Calendar.Clock;

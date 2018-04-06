@@ -30,8 +30,8 @@ procedure standard_allocators is
 			System.Long_Long_Integer_Types.Long_Long_Unsigned (X),
 			S,
 			Last,
-			Padding => ' ',
 			Width => S'Length,
+			Fill => ' ',
 			Error => Error);
 		Ada.Debug.Put (S);
 	end Put;
