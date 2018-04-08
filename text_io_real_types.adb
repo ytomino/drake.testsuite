@@ -1,10 +1,13 @@
 -- { dg-do run }
+with Ada.Float;
 with Ada.Numerics.Complex_Types;
 with Ada.Streams.Unbounded_Storage_IO;
 with Ada.Text_IO.Complex_IO;
 with Ada.Text_IO.Text_Streams;
 procedure text_io_real_types is
 	use Ada.Text_IO;
+	function Infinity is new Ada.Float.Infinity (Float);
+	function NaN is new Ada.Float.NaN (Float);
 	use type Ada.Numerics.Complex_Types.Complex;
 	type Fixed is delta 0.01 range -99.99 .. 99.99;
 	type Decimal is delta 0.01 digits 4;
@@ -29,6 +32,14 @@ begin
 		begin
 			Float_Text_IO.Put (File, Item, Fore => 3, Aft => 2, Exp => 0);
 			Float_Text_IO.Put (File, Item, Fore => 3); -- Default_Exp = 3
+			New_Line (File);
+			-- Infinity
+			Float_Text_IO.Put (File, Infinity, Fore => 3, Aft => 2, Exp => 0);
+			Float_Text_IO.Put (File, Infinity, Fore => 3); -- Default_Exp = 3
+			New_Line (File);
+			-- NaN
+			Float_Text_IO.Put (File, NaN, Fore => 3, Aft => 2, Exp => 0);
+			Float_Text_IO.Put (File, NaN, Fore => 3); -- Default_Exp = 3
 			New_Line (File);
 		end;
 		declare
@@ -68,6 +79,17 @@ begin
 			pragma Assert (Item = 0.25);
 			Float_Text_IO.Get (File, Item);
 			pragma Assert (Item = 0.25);
+			for I in 1 .. 2 loop
+				for J in 1 .. 2 loop
+					begin
+						Float_Text_IO.Get (File, Item);
+						pragma Assert (False);
+					exception
+						when Data_Error => null; -- Text_IO cannot read NAN/INF
+					end;
+				end loop;
+				Skip_Line (File);
+			end loop;
 		end;
 		declare
 			Item : Fixed;
@@ -105,8 +127,12 @@ begin
 			Ada.Streams.Unbounded_Storage_IO.Stream (Buffer));
 		declare
 			Item : constant String := Get_Line (File); -- float
+			SInf : constant String := Get_Line (File);
+			SNaN : constant String := Get_Line (File);
 		begin
 			pragma Assert (Item = "  0.25  2.50000E-01");
+			pragma Assert (SInf = "   INF          INF");
+			pragma Assert (SNaN = "   NAN          NAN");
 			null;
 		end;
 		declare
