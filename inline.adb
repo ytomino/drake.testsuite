@@ -214,7 +214,6 @@ begin -- inline renamings
 		Ignore (Lower_Case_Map); -- renamed
 		Ignore (Upper_Case_Map); -- renamed
 		Ignore (Case_Folding_Map); -- renamed
-		Ignore (Base_Map); -- renamed
 		Ignore (Basic_Map); -- renamed
 	end;
 	-- Ada.Strings.Wide_Wide_Maps.Wide_Wide_Constants
