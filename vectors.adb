@@ -241,6 +241,85 @@ begin
 			null;
 		end loop;
 	end;
+	declare -- Find
+		generic
+			type T is tagged limited private;
+			type C is private;
+			with procedure Append (
+				X : in out T;
+				E : in Character;
+				L : in Ada.Containers.Count_Type := 1) is <>;
+			with function Find (X : T; E : Character) return C is <>;
+			with function Find (X : T; E : Character; P : C) return C is <>;
+			with function Find_Index (X : T'Class; E : Character; P : Positive)
+				return Natural is <>;
+			with function Reverse_Find (X : T; E : Character) return C is <>;
+			with function Reverse_Find (X : T; E : Character; P : C)
+				return C is <>;
+			with function Reverse_Find_Index (
+				X : T'Class;
+				E : Character;
+				P : Positive)
+				return Natural is <>;
+			No_Element : in C;
+		procedure Generic_Try_Find;
+		procedure Generic_Try_Find is
+			X : T;
+		begin
+			-- empty
+			pragma Assert (Find (X, 'A') = No_Element);
+			pragma Assert (Find (X, 'A', No_Element) = No_Element);
+			pragma Assert (Find_Index (X, 'A', 1) = 0);
+			pragma Assert (Reverse_Find (X, 'A') = No_Element);
+			pragma Assert (Reverse_Find (X, 'A', No_Element) = No_Element);
+			pragma Assert (Reverse_Find_Index (X, 'A', Integer'Last) = 0);
+			-- not empty
+			Append (X, 'b');
+			pragma Assert (Find (X, 'A') = No_Element);
+			begin
+				pragma Assert (Find (X, 'A', No_Element) = No_Element);
+				raise Program_Error; -- correct behavior
+			exception
+				when Constraint_Error => null; -- intentional violation
+			end;
+			pragma Assert (Find_Index (X, 'A', 1) = 0);
+			pragma Assert (Reverse_Find (X, 'A') = No_Element);
+			begin
+				pragma Assert (Reverse_Find (X, 'A', No_Element) = No_Element);
+				raise Program_Error; -- correct behavior
+			exception
+				when Constraint_Error => null; -- intentional violation
+			end;
+			pragma Assert (Reverse_Find_Index (X, 'A', Integer'Last) = 0);
+		end Generic_Try_Find;
+		procedure Try_D is
+			new Generic_Try_Find (
+				Vectors.Vector,
+				Vectors.Cursor,
+				Vectors.Append,
+				Vectors.Find,
+				Vectors.Find,
+				Vectors.Find_Index,
+				Vectors.Reverse_Find,
+				Vectors.Reverse_Find,
+				Vectors.Reverse_Find_Index,
+				Vectors.No_Element);
+		procedure Try_I is
+			new Generic_Try_Find (
+				IVectors.Vector,
+				IVectors.Cursor,
+				IVectors.Append,
+				IVectors.Find,
+				IVectors.Find,
+				IVectors.Find_Index,
+				IVectors.Reverse_Find,
+				IVectors.Reverse_Find,
+				IVectors.Reverse_Find_Index,
+				IVectors.No_Element);
+	begin
+		Try_D;
+		Try_I;
+	end;
 	declare -- Iterate (invalid ranges)
 		generic
 			type T is tagged limited private;

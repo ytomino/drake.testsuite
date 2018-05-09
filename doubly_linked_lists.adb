@@ -240,19 +240,92 @@ begin
 		pragma Assert (X_F /= Y_F, "should be copied");
 	end;
 	declare -- Find
-		use type Lists.Cursor;
-		X : Lists.List;
-		Fst_A, Snd_A : Lists.Cursor;
+		generic
+			type T is tagged limited private;
+			type C is private;
+			with procedure Append (
+				X : in out T;
+				E : in Character;
+				L : in Ada.Containers.Count_Type := 1) is <>;
+			with procedure Insert (
+				Container : in out T;
+				Before : C;
+				New_Item : Character;
+				Position : out C;
+				Count : Ada.Containers.Count_Type := 1) is <>;
+			with function Next (P : C) return C is <>;
+			with function Previous (P : C) return C is <>;
+			with function Find (X : T; E : Character) return C is <>;
+			with function Find (X : T; E : Character; P : C) return C is <>;
+			with function Reverse_Find (X : T; E : Character) return C is <>;
+			with function Reverse_Find (X : T; E : Character; P : C)
+				return C is <>;
+			No_Element : in C;
+		procedure Generic_Try_Find;
+		procedure Generic_Try_Find is
+			X : T;
+			Fst_A, Snd_A : C;
+		begin
+			-- empty
+			pragma Assert (Find (X, 'A') = No_Element);
+			pragma Assert (Find (X, 'A', No_Element) = No_Element);
+			pragma Assert (Reverse_Find (X, 'A') = No_Element);
+			pragma Assert (Reverse_Find (X, 'A', No_Element) = No_Element);
+			-- not empty
+			Append (X, 'b');
+			pragma Assert (Find (X, 'A') = No_Element);
+			begin
+				pragma Assert (Find (X, 'A', No_Element) = No_Element);
+				raise Program_Error; -- correct behavior
+			exception
+				when Constraint_Error => null; -- intentional violation
+			end;
+			pragma Assert (Reverse_Find (X, 'A') = No_Element);
+			begin
+				pragma Assert (Reverse_Find (X, 'A', No_Element) = No_Element);
+				raise Program_Error; -- correct behavior
+			exception
+				when Constraint_Error => null; -- intentional violation
+			end;
+			-- existing cases
+			Insert (X, No_Element, 'a', Fst_A);
+			Append (X, 'b');
+			Insert (X, No_Element, 'a', Snd_A);
+			Append (X, 'b');
+			pragma Assert (Find (X, 'a') = Fst_A);
+			pragma Assert (Find (X, 'a', Next (Fst_A)) = Snd_A);
+			pragma Assert (Reverse_Find (X, 'a') = Snd_A);
+			pragma Assert (Reverse_Find (X, 'a', Previous (Snd_A)) = Fst_A);
+		end Generic_Try_Find;
+		procedure Try_D is
+			new Generic_Try_Find (
+				Lists.List,
+				Lists.Cursor,
+				Lists.Append,
+				Lists.Insert,
+				Lists.Next,
+				Lists.Previous,
+				Lists.Find,
+				Lists.Find,
+				Lists.Reverse_Find,
+				Lists.Reverse_Find,
+				Lists.No_Element);
+		procedure Try_I is
+			new Generic_Try_Find (
+				ILists.List,
+				ILists.Cursor,
+				ILists.Append,
+				ILists.Insert,
+				ILists.Next,
+				ILists.Previous,
+				ILists.Find,
+				ILists.Find,
+				ILists.Reverse_Find,
+				ILists.Reverse_Find,
+				ILists.No_Element);
 	begin
-		Lists.Insert (X, Lists.No_Element, 'b');
-		Lists.Insert (X, Lists.No_Element, 'a', Fst_A);
-		Lists.Insert (X, Lists.No_Element, 'b');
-		Lists.Insert (X, Lists.No_Element, 'a', Snd_A);
-		Lists.Insert (X, Lists.No_Element, 'b');
-		pragma Assert (Lists.Find (X, 'a') = Fst_A);
-		pragma Assert (Lists.Find (X, 'a', Lists.Next (Fst_A)) = Snd_A);
-		pragma Assert (Lists.Reverse_Find (X, 'a') = Snd_A);
-		pragma Assert (Lists.Reverse_Find (X, 'a', Lists.Previous (Snd_A)) = Fst_A);
+		Try_D;
+		Try_I;
 	end;
 	declare -- Iterate (invalid ranges)
 		generic
