@@ -69,6 +69,46 @@ begin
 		pragma Assert (X.First = Sets.No_Element);
 		pragma Assert (X.Last = Sets.No_Element);
 	end;
+	declare -- Copy
+		generic
+			type Set is private;
+			with function Copy (Source : Set) return Set is <>;
+			with function Empty_Set return Set is <>;
+			with function Length (Container : Set)
+				return Ada.Containers.Count_Type is <>;
+			with procedure Include (Container : in out Set; Item : Integer) is <>;
+	 		with function Equivalent_Sets (Left, Right : Set)
+				return Boolean is <>;
+			with procedure Dump (Container : Set; Message : String) is null;
+		procedure Generic_Try_Copy;
+		procedure Generic_Try_Copy is
+			X : Set := Copy (Empty_Set);
+		begin
+			pragma Assert (X = Empty_Set);
+			pragma Assert (Equivalent_Sets (X, Empty_Set));
+			for I in 1 .. 15 loop
+				Include (X, I);
+				declare
+					Y : Set := Copy (X);
+				begin
+					pragma Assert (X = Y);
+					pragma Assert (Equivalent_Sets (X, Y));
+					if I rem 3 = 0 then
+						X := Y;
+					end if;
+				end;
+				pragma Assert (Length (X) = I);
+			end loop;
+			Dump (X, Message => Ada.Debug.Source_Location);
+		end Generic_Try_Copy;
+		use Sets;
+		procedure TC is new Generic_Try_Copy (Sets.Set, Dump => Sets_Debug.Dump);
+		use ISets;
+		procedure ITC is new Generic_Try_Copy (ISets.Set);
+	begin
+		TC;
+		ITC;
+	end;
 	declare -- Ceiling, Floor
 		use type Sets.Cursor;
 		X : Sets.Set;
