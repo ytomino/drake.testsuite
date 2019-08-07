@@ -128,9 +128,11 @@ begin
 	end;
 	declare -- 2150-01-01
 		Z : constant Ada.Calendar.Time := Ada.Calendar.Time_Of (2150, 1, 1);
+		D : constant Duration := Ada.Calendar.Naked.Seconds_From_2150 (Z);
 	begin
-		pragma Assert (Ada.Calendar.Naked.Seconds_From_2150 (Z) = 0.0);
-		null;
+		Ada.Debug.Put (Duration'Image (D));
+		pragma Assert (D = 0.0);
+		--  This may fail if the leap seconds are enabled.
 	end;
 	declare -- overflow
 		D : Ada.Calendar.Time;
