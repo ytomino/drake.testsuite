@@ -127,6 +127,10 @@ procedure calendar_arithmetic is
 				T2 - 1.0,
 				T1 + 1.0, -- just leap second
 				Days => 548, Seconds => 86398.0, Leap_Seconds => 1);
+			Try_Diff (
+				T1 + 1.99,
+				T1 - 24 * 60 * 60.0 + 1.0,
+				Days => 0, Seconds => 86400.99, Leap_Seconds => 0);
 		end if;
 	end Try;
 	UTC_LS_Name : constant String := "/usr/share/zoneinfo/right/GMT";
