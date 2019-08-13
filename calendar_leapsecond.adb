@@ -52,10 +52,11 @@ procedure calendar_leapsecond is
 					pragma Assert (Year = 1998);
 					pragma Assert (Month = 12);
 					pragma Assert (Day = 31);
-					pragma Assert (Seconds = 86400.0); -- including LS
-					pragma Assert (Ada.Calendar.Seconds (The_LS_Time) = 86400.0);
+					pragma Assert (Seconds = 86399.0); -- not including LS
+					pragma Assert (Ada.Calendar.Seconds (The_LS_Time) = 86399.0);
 					pragma Assert (
-						Ada.Calendar.Time_Of (1998, 12, 31, 86400.0) = The_LS_Time);
+						Ada.Calendar.Time_Of (1998, 12, 31, 86399.0) + 1.0 =
+						The_LS_Time);
 					-- Formatting (Seconds)
 					Ada.Calendar.Formatting.Split (
 						The_LS_Time,
