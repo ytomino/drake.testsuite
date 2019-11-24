@@ -19,6 +19,8 @@ begin
 				create (file, Name => T);
 				put_line (file, "TARGET");
 				close (file);
+			elsif Ada.Directories.Exists (T) then
+				Ada.Directories.Delete_File (T);
 			end if;
 		end;
 		ada.directories.replace_file (Source_Name => S, Target_Name => T);
